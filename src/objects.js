@@ -58,6 +58,27 @@ export class ColumnMappingValue {
     )
 
   }
+  // this method is used to move a function arguemnt up the list (from 2nd to 1st argument)
+  moveArgUp (idx) { // where idx is the index we want to move
+    // can't move the first object up
+    if (idx > 0) {
+      // splice args at idx removing sinlge value into temp object
+      // the value moved into tmp is the one we want to move
+      var tmp = this.args.splice(idx, 1)
+      // after we have extracted the value, placeit back into the args array at a higher index
+      this.args.splice(idx-1, 0, tmp[0])
+    }
+  }
+  moveArgDown (idx) {
+    // can't move the last object down
+    if (idx+1 < this.args.length) {
+      // splice args at idx removing sinlge value into temp object
+      // the value moved into tmp is the one we want to move
+      var tmp = this.args.splice(idx, 1)
+      // after we have extracted the value, placeit back into the args array at a higher index
+      this.args.splice(idx+1, 0, tmp[0])
+    }
+  }
 
   // based on a type, initialize the correct values and reset any that may have existed
   fromType(type) {
