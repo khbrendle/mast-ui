@@ -47,13 +47,13 @@ export class ColumnMappingValue {
   }
   // create wrapper around an object
   // this just pushes the current object into an argument of an un-named function
-  newWrapper (prop) {
+  newWrapper (isArg, prop) {
     console.log("creating new wrapper object for type ", prop.type);
     console.log("input instance of Array? ", prop instanceof Array)
     console.log("input instance of ColumnMappingValue? ", prop instanceof ColumnMappingValue)
     prop.isArg = true
     prop.argIndex = 0
-    return new ColumnMappingValue('Function', false, null, '', '', '', '', [prop])
+    return new ColumnMappingValue('Function', isArg, null, '', '', '', '', [prop])
   }
   fromJSON (x) {
     console.log("creating object from string");
