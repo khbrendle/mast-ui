@@ -1,6 +1,7 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
   import { ColumnMappingValue } from "./objects.js";
+  import { Input, Button, Row, Col } from 'sveltestrap';
 
   export let props = new ColumnMappingValue().newField();
   $: props = props;
@@ -49,28 +50,35 @@
 
 <div class='outer'>
   <!-- <p>argIndex: {props.argIndex}</p> -->
-  <select class='type-select' bind:value={props.type} on:change={handleSelectType}>
-    {#each mappingTypes as type}
-      <option id={type.id} value={type.text}>
-        {type.text}
-      </option>
-    {/each}
-  </select>
+  <Row class="justify-content-between">
+    <Col class="col-3">
+      <Input type="select" class='type-select' bind:value={props.type} on:change={handleSelectType}>
+        {#each mappingTypes as type}
+          <option id={type.id} value={type.text}>
+            {type.text}
+          </option>
+        {/each}
+      </Input>
+    </Col>
+    <Col class="col-1" style="text-align: right;">
+      <Button class='wrap-button' type='button' on:click={handleWrap}>Wrap</Button>
+    </Col>
+  </Row>
+
   <!-- {#if props.isArg}
     <button class='up-arrow' type='button' on:click|preventDefault={() => handleMoveArgUp(argIndex)}>&#8593;</button>
   {/if} -->
-  <button class='wrap-button' type='button' on:click={handleWrap}>Wrap</button>
   <div class="inner">
   {#if props.type === 'Field'}
-    <input class="field_table" placeholder='Table' bind:value={props.field.table}>
-    <input class="field_column" placeholder='Column' bind:value={props.field.column}>
+    <Input class="field_table" placeholder='Table' bind:value={props.field.table} />
+    <Input class="field_column" placeholder='Column' bind:value={props.field.column} />
   {:else if props.type === 'Value'}
-      <input id="value" placeholder="Value" bind:value={props.value}>
+      <Input id="value" placeholder="Value" bind:value={props.value} />
   {:else if props.type === 'Function'}
-    <input class="function" placeholder="Function" bind:value={props.function}>
+    <Input class="function" placeholder="Function" bind:value={props.function} />
 
-    <button type='button' on:click={handleAddArgument}>Add argument</button>
-    <div class='func-args' >
+    <Button type='button' on:click={handleAddArgument}>Add argument</Button>
+    <div class='func-args'>
       {#each props.args as arg, idx}
         <button class='up-arrow' type='button' on:click|preventDefault={() => handleMoveArgUp(idx)}>&#8593;</button>
         <svelte:self bind:props={arg} />
@@ -87,37 +95,35 @@
 </div>
 
 <style>
-			input {
-			  right: 10px;
-			  width: 200px;
-			}
-			.type-select {
+
+			/* .type-select {
 			  position: relative;
 			  left: 10px;
 			  top: 10px;
-			}
+			} */
+
+      .outer {
+        background-color: #fff;
+        padding: 3em;
+        /* margin: 5px;
+        border-radius: 12px; */
+      }
+
 			.inner {
 			  /* display: flex; */
-			  background-color: #52baeb;
-			  margin: 10px;
-			  padding: 10px;
+			  /* padding: 1em; */
+        /* box-shadow: 2px 2px 10px 0 rgba(0,0,0,0.2); */
 			}
-			.outer {
-			  background-color: #52baeb;
-			  margin: 5px;
-			  border-color: black;
-			  border-style: dashed;
-			  border-width: 2px;
-			}
+
 			.func-args {
-			  border-color: black;
-			  border-style: dashed;
-			  border-width: 2px;
-			  padding-top: 20px;
-			  padding-bottom: 20px;
+        margin: 1.5em;
+        border-radius: 12px;
+        padding: 1em 0 1em 3em;
+        box-shadow: 2px 2px 10px 0 rgba(0,0,0,0.2);
 			}
+
 			.wrap-button {
-			  float: right;
+			  /* float: right; */
 			  margin: 5px;
 			}
 			.up-arrow {

@@ -2,7 +2,8 @@
 	import { onMount, beforeUpdate } from "svelte";
 	import ColumnMappingComponent from "./ColumnMappingComponent.svelte";
 	import { ColumnMappingValue } from "./objects.js";
-
+	import { Container, Col, Row } from 'sveltestrap';
+	// import "./App.css"
 	// 3 level nesting
 	// let input =
 	//   '{"type":"Function","field":{"table":"","column":""},"value":"","function":"f.concat","args":[{"type":"Function","field":{"table":"","column":""},"value":"","function":"f.lit","args":[{"type":"Value","field":{"table":"","column":""},"value":"static text","function":"","args":[]}]}]}';
@@ -14,7 +15,6 @@
 	    ? new ColumnMappingValue()
 	    : new ColumnMappingValue().fromJSON(input);
 	$: child_value = child_value; // this will make sure the value gets updated on change
-
 	function syntaxHighlight(json) {
 	  json = json
 	    .replace(/&/g, "&amp;")
@@ -40,10 +40,17 @@
 	  );
 	}
 </script>
-
-<div >
-	<ColumnMappingComponent bind:props={child_value} />
-	<p> child value<br> </p>
-	<div>{@html "<pre>" + syntaxHighlight(JSON.stringify(child_value, null, 2)) + "</pre>"}</div>
-
+<div class="app">
+	<div class="wrapper">
+		<Row>
+		<Col class="col-sm-8">
+			<h3>Target Mapping</h3>
+			<ColumnMappingComponent bind:props={child_value} />
+		</Col>
+		<Col class="col-sm-4">
+			<h3>Child Value</h3>
+			<div class="jsonWrapper">{@html "<pre>" + syntaxHighlight(JSON.stringify(child_value, null, 3)) + "</pre>"}</div>
+		</Col>
+		</Row>
+	</div>
 </div>
