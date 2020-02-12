@@ -1,10 +1,4 @@
-// export class ColumnMappingProps {
-//   constructor(data, isArg, argIndex) {
-//     this.data = date === undefined ? new ColumnMappingValue() : data;
-//     this.isArg = isArg === undefined ? false : isArg;
-//     this.argIndex = argIndex === undefined ? null : argIndex
-//   }
-// }
+import { syntaxHighlight } from "./utils.js"
 
 export class ColumnMappingValue {
   constructor(type, isArg, argIndex, table, column, value, func, args) {
@@ -40,20 +34,20 @@ export class ColumnMappingValue {
   // create new function object
   // mostly used to reset if object type is changed
   newFunction (idx) {
-    console.log("creating new function object");
+    console.log(`creating new function object with index ${idx}`);
     return new ColumnMappingValue('Function',
       idx === undefined ? false : true,
       idx === undefined ? null : idx, '', '', '', '', [new ColumnMappingValue().newField(0)])
   }
   // create wrapper around an object
   // this just pushes the current object into an argument of an un-named function
-  newWrapper (isArg, prop) {
+  newWrapper (isArg, argsIndex, prop) {
     console.log("creating new wrapper object for type ", prop.type);
     console.log("input instance of Array? ", prop instanceof Array)
     console.log("input instance of ColumnMappingValue? ", prop instanceof ColumnMappingValue)
     prop.isArg = true
     prop.argIndex = 0
-    return new ColumnMappingValue('Function', isArg, null, '', '', '', '', [prop])
+    return new ColumnMappingValue('Function', isArg, argsIndex, '', '', '', '', [prop])
   }
   fromJSON (x) {
     console.log("creating object from string");
@@ -104,6 +98,7 @@ export class ColumnMappingValue {
 
   // based on a type, initialize the correct values and reset any that may have existed
   fromType(type, idx) {
+    console.log(`got index ${idx} in new ColumnMappingValue().fromType()`)
     switch (type) {
       case 'Field':
         return new ColumnMappingValue().newField(idx)
@@ -113,4 +108,16 @@ export class ColumnMappingValue {
         return new ColumnMappingValue().newFunction(idx)
     }
   }
+
+  toString(replacer = null, spacing = 2) {
+    return JSON.stringify(this, replacer, spacing)
+  }
+
+  print() {
+    return syntaxHighlight(this.toString(null, 2))
+  }
+}
+
+export class TableMappingValue {
+
 }

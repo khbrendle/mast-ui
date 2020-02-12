@@ -1,0 +1,24 @@
+{
+  "select": ["name", "height"],
+  "location": {
+    "database": "db",
+    "schema": "prod",
+    "table": "people",
+  },
+  "filter": "",
+  "operations": [
+    {
+      "type": "join|union",
+      "source": {
+        "select": ["name", "height"],
+        "location": {
+          "database": "db",
+          "schema": "prod",
+          "table": "pets",
+        },
+        "filter": "",
+        "operation": []
+      }
+    }
+  ]
+}

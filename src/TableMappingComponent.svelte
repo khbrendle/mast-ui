@@ -2,9 +2,6 @@
   import { onMount, afterUpdate } from "svelte";
   import { ColumnMappingValue } from "./objects.js";
 
-  export let disabled = false;
-  $: disabled = disabled;
-
   export let props = new ColumnMappingValue().newField();
   $: props = props;
 
@@ -74,7 +71,7 @@
 
 <div class='outer'>
   <!-- <p>argIndex: {props.argIndex}</p> -->
-  <select class='type-select dropdown' disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
+  <select class='type-select dropdown' bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
       <option id={type.id} value={type.text}>
         {type.text}
@@ -86,45 +83,44 @@
     hidden delete button just for consistency
   -->
   {#if !props.isArg}
-  <!-- this button should always disabled, can't delete the top-most object -->
   <button class='wrap-button btn btn-default btn-sm' type='button' disabled=true on:click|preventDefault={() => handleDelete(props.argIndex)}>
   <span class="glyphicon glyphicon-remove"></span>
   </button>
   {/if}
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click={handleWrap}>Wrap</button>
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click={handleReset}>
+  <button class='wrap-button btn btn-default btn-sm' type='button' on:click={handleWrap}>Wrap</button>
+  <button class='wrap-button btn btn-default btn-sm' type='button' on:click={handleReset}>
     <span class="glyphicon glyphicon-refresh"></span>
   </button>
 
   <div class="inner">
   {#if props.type === 'Field'}
-    <input class="field_table" placeholder='Table' bind:value={props.field.table} disabled={disabled} list="field_tables">
+    <input class="field_table" placeholder='Table' bind:value={props.field.table} list="field_tables">
     <datalist id="field_tables">
     {#each fieldTables as ft}
       <option value={ft.text}>
     {/each}
     </datalist>
-    <input class="field_column" placeholder='Column' bind:value={props.field.column} disabled={disabled}>
+    <input class="field_column" placeholder='Column' bind:value={props.field.column}>
   {:else if props.type === 'Value'}
-      <input id="value" placeholder="Value" bind:value={props.value} disabled={disabled}>
+      <input id="value" placeholder="Value" bind:value={props.value}>
   {:else if props.type === 'Function'}
-    <input class="function" placeholder="Function" bind:value={props.function} disabled={disabled}>
+    <input class="function" placeholder="Function" bind:value={props.function}>
 
-    <button type='button' on:click={handleAddArgument} disabled={disabled}>Add argument</button>
+    <button type='button' on:click={handleAddArgument}>Add argument</button>
     <div class='func-args' >
       {#each props.args as arg, idx}
       <div class="inner nest-item">
       <!-- move and delete buttons here so that parent can control child objects -->
-        <button class='up-arrow btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleMoveArgUp(idx)}>
+        <button class='up-arrow btn btn-default btn-sm' type='button' on:click|preventDefault={() => handleMoveArgUp(idx)}>
           <span class="glyphicon glyphicon-chevron-up"></span>
         </button>
         {#if arg.isArg}
-        <button class='delete-arg-button wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleDelete(idx)}>
+        <button class='delete-arg-button wrap-button btn btn-default btn-sm' type='button' on:click|preventDefault={() => handleDelete(idx)}>
         <span class="glyphicon glyphicon-remove"></span>
         </button>
         {/if}
         <svelte:self bind:props={arg} />
-        <button class='down-arrow btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleMoveArgDown(idx)}>
+        <button class='down-arrow btn btn-default btn-sm' type='button' on:click|preventDefault={() => handleMoveArgDown(idx)}>
           <span class="glyphicon glyphicon-chevron-down"></span>
         </button>
       </div>
@@ -164,7 +160,7 @@
     border-style: dashed;
     border-width: 2px;
     /* padding-top: 20px;
-                              padding-bottom: 20px; */
+                        padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
