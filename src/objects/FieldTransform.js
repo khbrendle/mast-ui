@@ -1,11 +1,11 @@
-import { syntaxHighlight } from "./utils.js"
+import { syntaxHighlight } from "../utils/utils.js"
 
-export class ColumnMappingValue {
-  constructor(type, isArg, argIndex, table, column, value, func, args) {
+export class FieldTransform {
+  constructor(type, is_arg, arg_index, table, column, value, func, args) {
     // console.log("start constructing");
     this.type = type === undefined ? 'Field' : type; // defaulting to field
-    this.isArg = isArg === undefined ? false : isArg;
-    this.argIndex = argIndex === undefined ? null : argIndex;
+    this.is_arg = is_arg === undefined ? false : is_arg;
+    this.arg_index = arg_index === undefined ? null : arg_index;
     this.field = {
       table: table === undefined ? '' : table,
       column: column === undefined ? '' : column
@@ -18,9 +18,15 @@ export class ColumnMappingValue {
   }
   // create new field object
   // mostly used to reset if object type is changed
+  newFieldTransform (idx) {
+    console.log("creating new field object");
+    return new FieldTransform('Field',
+    idx === undefined ? false : true,
+    idx === undefined ? null : idx, '', '', '', '', [])
+  }
   newField (idx) {
     console.log("creating new field object");
-    return new ColumnMappingValue('Field',
+    return new FieldTransform('Field',
     idx === undefined ? false : true,
     idx === undefined ? null : idx, '', '', '', '', [])
   }
@@ -28,43 +34,43 @@ export class ColumnMappingValue {
   // mostly used to reset if object type is changed
   newValue (idx) {
     console.log("creating new value object");
-    return new ColumnMappingValue('Value', idx === undefined ? false : true,
+    return new FieldTransform('Value', idx === undefined ? false : true,
     idx === undefined ? null : idx, '', '', '', '', [])
   }
   // create new function object
   // mostly used to reset if object type is changed
   newFunction (idx) {
     console.log(`creating new function object with index ${idx}`);
-    return new ColumnMappingValue('Function',
+    return new FieldTransform('Function',
       idx === undefined ? false : true,
-      idx === undefined ? null : idx, '', '', '', '', [new ColumnMappingValue().newField(0)])
+      idx === undefined ? null : idx, '', '', '', '', [new FieldTransform().newField(0)])
   }
   // create wrapper around an object
   // this just pushes the current object into an argument of an un-named function
-  newWrapper (isArg, argsIndex, prop) {
+  newWrapper (is_arg, argsIndex, prop) {
     console.log("creating new wrapper object for type ", prop.type);
     console.log("input instance of Array? ", prop instanceof Array)
-    console.log("input instance of ColumnMappingValue? ", prop instanceof ColumnMappingValue)
-    prop.isArg = true
-    prop.argIndex = 0
-    return new ColumnMappingValue('Function', isArg, argsIndex, '', '', '', '', [prop])
+    console.log("input instance of FieldTransform? ", prop instanceof FieldTransform)
+    prop.is_arg = true
+    prop.arg_index = 0
+    return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', [prop])
   }
   fromJSON (x) {
     console.log("creating object from string");
     let o = JSON.parse(x);
-    return new ColumnMappingValue().fromObject(o)
+    return new FieldTransform().fromObject(o)
   }
   fromObject (o) {
     console.log("creating object from js object");
-    return new ColumnMappingValue(
+    return new FieldTransform(
       o.type === undefined ? '' : o.type,
-      o.isArg === undefined ? false : o.isArg,
-      o.argIndex === undefined ? null : o.argIndex,
+      o.is_arg === undefined ? false : o.is_arg,
+      o.arg_index === undefined ? null : o.arg_index,
       o.field.table === undefined ? '' : o.field.table,
       o.field.column === undefined ? '' : o.field.column,
       o.value === undefined ? '' : o.value,
       o.function === undefined ? '' : o.function,
-      o.args === undefined ? [] : o.args.map( x => new ColumnMappingValue().fromObject(x))
+      o.args === undefined ? [] : o.args.map( x => new FieldTransform().fromObject(x))
     )
 
   }
@@ -74,8 +80,8 @@ export class ColumnMappingValue {
     if (idx > 0) {
       // splice args at idx removing sinlge value into temp object
       // the value moved into tmp is the one we want to move
-      this.args[idx].argIndex -= 1
-      this.args[idx-1].argIndex += 1
+      this.args[idx].arg_index -= 1
+      this.args[idx-1].arg_index += 1
       var tmp = this.args.splice(idx, 1)
       // after we have extracted the value, placeit back into the args array at a higher index
       this.args.splice(idx-1, 0, tmp[0])
@@ -87,8 +93,8 @@ export class ColumnMappingValue {
     if (idx+1 < this.args.length) {
       // splice args at idx removing sinlge value into temp object
       // the value moved into tmp is the one we want to move
-      this.args[idx+1].argIndex -= 1
-      this.args[idx].argIndex += 1
+      this.args[idx+1].arg_index -= 1
+      this.args[idx].arg_index += 1
       var tmp = this.args.splice(idx, 1)
       // after we have extracted the value, placeit back into the args array at a higher index
       this.args.splice(idx+1, 0, tmp[0])
@@ -98,14 +104,14 @@ export class ColumnMappingValue {
 
   // based on a type, initialize the correct values and reset any that may have existed
   fromType(type, idx) {
-    console.log(`got index ${idx} in new ColumnMappingValue().fromType()`)
+    console.log(`got index ${idx} in new FieldTransform().fromType()`)
     switch (type) {
       case 'Field':
-        return new ColumnMappingValue().newField(idx)
+        return new FieldTransform().newField(idx)
       case 'Value':
-        return new ColumnMappingValue().newValue(idx)
+        return new FieldTransform().newValue(idx)
       case 'Function':
-        return new ColumnMappingValue().newFunction(idx)
+        return new FieldTransform().newFunction(idx)
     }
   }
 
@@ -116,8 +122,4 @@ export class ColumnMappingValue {
   print() {
     return syntaxHighlight(this.toString(null, 2))
   }
-}
-
-export class TableMappingValue {
-
 }

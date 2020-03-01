@@ -1,3 +1,5 @@
+<!-- this component contains a table of columns which has a button to create/edit field source-to-target mappings -->
+
 <script>
   import ColumnTransformModal from "./ColumnTransformModal.svelte";
 

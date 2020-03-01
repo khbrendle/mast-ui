@@ -2,13 +2,13 @@
   // import ColumnTransform from "./ColumnTransform.svelte";
   import { beforeUpdate, afterUpdate } from "svelte";
   import ColumnMappingComponent from "./ColumnMappingComponent.svelte";
-  import { ColumnMappingValue } from "./objects.js";
+  import { FieldTransform } from "./objects/FieldTransform.js";
 
   export let input = { field_id: null, transform: null };
   $: input.transform =
     input.transform === null
-      ? new ColumnMappingValue()
-      : new ColumnMappingValue().fromObject(input.transform);
+      ? new FieldTransform()
+      : new FieldTransform().fromObject(input.transform);
 
   export let display = "none";
   $: display = display;

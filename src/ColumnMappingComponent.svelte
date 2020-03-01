@@ -1,14 +1,15 @@
 <script>
   import { onMount, afterUpdate } from "svelte";
-  import { ColumnMappingValue } from "./objects.js";
+  import { FieldTransform } from "./objects/FieldTransform.js";
+  import { Col, Row, Container, Collapse, Button } from "sveltestrap";
 
   export let disabled = false;
   $: disabled = disabled;
 
-  export let props = new ColumnMappingValue().newField();
+  export let props = new FieldTransform().newField();
   $: props = props;
 
-  // console.log("object ", props, " is arg: ", props.isArg);
+  // console.log("object ", props, " is arg: ", props.is_arg);
 
   let mappingTypes = [
     { id: 0, text: "Field" },
@@ -24,21 +25,17 @@
   let handleAddArgument = () => {
     props.args = [
       ...props.args,
-      new ColumnMappingValue().newField(props.args.length)
+      new FieldTransform().newField(props.args.length)
     ];
   };
 
   let handleSelectType = e => {
     console.log("handling select");
-    props = new ColumnMappingValue().fromType(e.target.value, props.argIndex);
+    props = new FieldTransform().fromType(e.target.value, props.arg_index);
   };
 
   function handleWrap() {
-    props = new ColumnMappingValue().newWrapper(
-      props.isArg,
-      props.argIndex,
-      props
-    );
+    props = new FieldTransform().newWrapper(props.is_arg, props.arg_index, props);
   }
 
   function handleMoveArgUp(idx) {
@@ -61,9 +58,9 @@
 
   function handleReset() {
     console.log("removing function argument");
-    props = new ColumnMappingValue().fromType(
+    props = new FieldTransform().fromType(
       props.type,
-      props.argIndex === null ? undefined : props.argIndex
+      props.arg_index === null ? undefined : props.arg_index
     );
   }
 
@@ -73,7 +70,7 @@
 </script>
 
 <div class='outer'>
-  <!-- <p>argIndex: {props.argIndex}</p> -->
+  <!-- <p>arg_index: {props.arg_index}</p> -->
   <select class='type-select dropdown' disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
       <option id={type.id} value={type.text}>
@@ -85,9 +82,9 @@
     wrap and reset buttons here because they are needed at the object level,
     hidden delete button just for consistency
   -->
-  {#if !props.isArg}
+  {#if !props.is_arg}
   <!-- this button should always disabled, can't delete the top-most object -->
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled=true on:click|preventDefault={() => handleDelete(props.argIndex)}>
+  <button class='wrap-button btn btn-default btn-sm' type='button' disabled=true on:click|preventDefault={() => handleDelete(props.arg_index)}>
   <span class="glyphicon glyphicon-remove"></span>
   </button>
   {/if}
@@ -118,7 +115,7 @@
         <button class='up-arrow btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleMoveArgUp(idx)}>
           <span class="glyphicon glyphicon-chevron-up"></span>
         </button>
-        {#if arg.isArg}
+        {#if arg.is_arg}
         <button class='delete-arg-button wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleDelete(idx)}>
         <span class="glyphicon glyphicon-remove"></span>
         </button>
@@ -164,7 +161,7 @@
     border-style: dashed;
     border-width: 2px;
     /* padding-top: 20px;
-                              padding-bottom: 20px; */
+                                              padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
@@ -191,8 +188,6 @@
   }
   .nest-item {
     padding: 0px;
-    margin: 0px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 0px 10px;
   }
 </style>
