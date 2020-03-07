@@ -1,7 +1,16 @@
 <script>
-  import { onMount, afterUpdate } from "svelte";
+  import { onMount, beforeUpdate, afterUpdate } from "svelte";
   import { FieldTransform } from "./objects/FieldTransform.js";
-  import { Col, Row, Container, Collapse, Button } from "sveltestrap";
+  import { getTable, getField } from "./utils/api.js";
+  import { Col, Row, Container, Input, CustomInput, Button } from "sveltestrap";
+
+  const uniqID =
+    Math.random()
+      .toString(36)
+      .substring(2, 15) +
+    Math.random()
+      .toString(36)
+      .substring(2, 15);
 
   export let disabled = false;
   $: disabled = disabled;
@@ -10,6 +19,7 @@
   $: props = props;
 
   // console.log("object ", props, " is arg: ", props.is_arg);
+  let moveBtnStyle = "margin: 5px auto; display: flex;";
 
   let mappingTypes = [
     { id: 0, text: "Field" },
@@ -17,114 +27,178 @@
     { id: 2, text: "Function" }
   ];
 
-  let fieldTables = [
-    { id: 0, text: "person" },
-    { id: 1, text: "visit" }
-  ];
+  let fieldOptions = [];
+  $: fieldOptions = fieldOptions;
 
-  let handleAddArgument = () => {
+  let tableOptions = [];
+  $: tableOptions = tableOptions;
+
+  const handleAddArgument = () => {
+    console.log("adding argument");
     props.args = [
       ...props.args,
       new FieldTransform().newField(props.args.length)
     ];
+    props = props;
   };
 
-  let handleSelectType = e => {
+  const handleSelectType = e => {
     console.log("handling select");
     props = new FieldTransform().fromType(e.target.value, props.arg_index);
   };
 
-  function handleWrap() {
+  const handleWrap = () => {
     props = new FieldTransform().newWrapper(props.is_arg, props.arg_index, props);
-  }
+  };
 
-  function handleMoveArgUp(idx) {
+  const handleMoveArgUp = idx => {
     console.log("moving up index ", idx);
     props = props.moveArgUp(idx);
-    console.log("new props after move Up: ", props);
-  }
+  };
 
-  function handleMoveArgDown(idx) {
+  const handleMoveArgDown = idx => {
     console.log("moving down index ", idx);
     props = props.moveArgDown(idx);
-  }
+  };
 
-  function handleDelete(argsIndex) {
-    console.log(`removing function argument at index ${argsIndex}`);
-    console.log(`props has ${props.args.length} args`);
-    props.args.splice(argsIndex, 1);
-    props.args = props.args;
-  }
+  const handleDelete = () => {
+    props = null;
+  };
 
-  function handleReset() {
-    console.log("removing function argument");
+  const handleReset = () => {
     props = new FieldTransform().fromType(
       props.type,
       props.arg_index === null ? undefined : props.arg_index
     );
-  }
+  };
+  const handleSelectTable = e => {
+    console.log("handling select table");
+    // console.log(e);
+    // props.field.table = e.target.value;
+    props.field.table_id = e.target.options[e.target.selectedIndex].id;
 
-  // afterUpdate(() => {
-  //   console.log("new props after update: ", props);
-  // });
+    props.field.column = "";
+    props.field.column_id = "";
+    document.getElementById(`field-select-${uniqID}`).selectedIndex = 0;
+    getField({ table_id: props.field.table_id }).then(data => {
+      fieldOptions = data;
+    });
+  };
+  const handleSelectField = e => {
+    // console.log(e);
+    // props.field.column = e.target.value;
+    props.field.column_id = e.target.options[e.target.selectedIndex].id;
+  };
+  beforeUpdate(() => {
+    // console.log("new props after update: ", props);
+    var i = props.args.indexOf(null);
+    // console.log(`removing arg at index ${i}`);
+    if (i >= 0) {
+      props.args.splice(i, 1);
+      // props.args = props.args;
+    }
+
+    // if (
+    //   props.field.column !== undefined &&
+    //   props.field.column !== "" &&
+    //   props.field.table_id !== undefined &&
+    //   props.field.table_id !== ""
+    // ) {
+    //   getField({ table_id: props.field.table_id }).then(data => {
+    //     fieldOptions = data;
+    //   });
+    // }
+
+    // this helps the select menus for table and field
+    props = props;
+  });
+  afterUpdate(() => {
+    //   //   // console.log("new props after update: ", props);
+    //   //   var i = props.args.indexOf(null);
+    //   //   // console.log(`removing arg at index ${i}`);
+    //   //   if (i >= 0) {
+    //   //     props.args.splice(i, 1);
+    //   //     // props.args = props.args;
+    //   //   }
+    //   //   // this helps the select menus for table and field
+    //   props = props;
+    //
+    // this didn't do anything
+    // var i;
+    // for (i = 0; i < props.args.length; i++) {
+    //   props.args[i] = props.args[i];
+    // }
+    //
+    // if (props.field.column !== undefined && props.field.column !== "") {
+    //   getField({ table_id: props.field.table_id }).then(data => {
+    //     fieldOptions = data;
+    //   });
+    // }
+  });
+
+  onMount(() => {
+    console.log("mouting ColumnMappingComponent");
+    getTable().then(data => {
+      // console.log(data);
+      tableOptions = data;
+    });
+
+    if (props.field.column !== undefined && props.field.column !== "") {
+      getField({ table_id: props.field.table_id }).then(data => {
+        fieldOptions = data;
+      });
+    }
+  });
 </script>
 
 <div class='outer'>
-  <!-- <p>arg_index: {props.arg_index}</p> -->
-  <select class='type-select dropdown' disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
+  <Input type="select" style="display: inline; width: fit-content;" disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
-      <option id={type.id} value={type.text}>
+      <option id={type.id} value={type.text} selected={props.type === type.text ? true : false}>
         {type.text}
       </option>
     {/each}
-  </select>
-  <!--
-    wrap and reset buttons here because they are needed at the object level,
-    hidden delete button just for consistency
-  -->
-  {#if !props.is_arg}
-  <!-- this button should always disabled, can't delete the top-most object -->
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled=true on:click|preventDefault={() => handleDelete(props.arg_index)}>
-  <span class="glyphicon glyphicon-remove"></span>
-  </button>
-  {/if}
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click={handleWrap}>Wrap</button>
-  <button class='wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click={handleReset}>
-    <span class="glyphicon glyphicon-refresh"></span>
-  </button>
+  </Input>
+
+  <Button class='float-right' type='button' disabled={props.is_arg ? false : true} on:click={handleDelete}>delete</Button>
+  <Button class='float-right' disabled={disabled} on:click={handleWrap}>wrap</Button>
+  <Button class='float-right' disabled={disabled} on:click={handleReset}>refresh</Button>
 
   <div class="inner">
   {#if props.type === 'Field'}
-    <input class="field_table" placeholder='Table' bind:value={props.field.table} disabled={disabled} list="field_tables">
-    <datalist id="field_tables">
-    {#each fieldTables as ft}
-      <option value={ft.text}>
-    {/each}
-    </datalist>
-    <input class="field_column" placeholder='Column' bind:value={props.field.column} disabled={disabled}>
+  <!-- using HTML selects here to be able to bind value which will load the set option from JSON -->
+    <select id={`table-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.table} on:change|preventDefault={handleSelectTable}>
+      <option>select table</option>
+      {#each tableOptions as ft}
+        <option id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
+      {/each}
+    </select>
+    <select id={`field-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.column} on:change|preventDefault={handleSelectField}>
+      <option>select field</option>
+      {#each fieldOptions as ft}
+        <option id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
+      {/each}
+    </select>
   {:else if props.type === 'Value'}
       <input id="value" placeholder="Value" bind:value={props.value} disabled={disabled}>
   {:else if props.type === 'Function'}
     <input class="function" placeholder="Function" bind:value={props.function} disabled={disabled}>
 
-    <button type='button' on:click={handleAddArgument} disabled={disabled}>Add argument</button>
+    <Button on:click={handleAddArgument} disabled={disabled}>Add argument</Button>
     <div class='func-args' >
       {#each props.args as arg, idx}
-      <div class="inner nest-item">
-      <!-- move and delete buttons here so that parent can control child objects -->
-        <button class='up-arrow btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleMoveArgUp(idx)}>
-          <span class="glyphicon glyphicon-chevron-up"></span>
-        </button>
-        {#if arg.is_arg}
-        <button class='delete-arg-button wrap-button btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleDelete(idx)}>
-        <span class="glyphicon glyphicon-remove"></span>
-        </button>
+        {#if arg !== null}
+        <div class="inner nest-item">
+        <!-- move and delete buttons here so that parent can control child objects -->
+          {#if idx > 0}
+          <Button size="sm" style={moveBtnStyle} disabled={disabled} on:click={() => handleMoveArgUp(idx)}>move up</Button>
+          {/if}
+          <svelte:self bind:props={arg} />
+          {#if idx < props.args.length-1}
+          <Button size="sm" style={moveBtnStyle} disabled={disabled} on:click={() => handleMoveArgDown(idx)}>move down</Button>
+          {/if}
+        </div>
         {/if}
-        <svelte:self bind:props={arg} />
-        <button class='down-arrow btn btn-default btn-sm' type='button' disabled={disabled} on:click|preventDefault={() => handleMoveArgDown(idx)}>
-          <span class="glyphicon glyphicon-chevron-down"></span>
-        </button>
-      </div>
       {/each}
     </div>
   {:else }
@@ -145,23 +219,25 @@
   }
   .inner {
     /* display: flex; */
-    background-color: #52baeb;
-    margin: 10px;
+    /* background-color: #52baeb; */
+    /* margin: 10px; */
     padding: 10px;
   }
   .outer {
+    /* margin: 5px; */
+    margin: 8px;
     background-color: #52baeb;
-    margin: 5px;
-    border-color: black;
-    border-style: dashed;
-    border-width: 2px;
+    /* border-color: black;
+                                                                                                                                                                                                                                                                                                  border-style: dashed;
+                                                                                                                                                                                                                                                                                                  border-width: 2px; */
   }
   .func-args {
     border-color: black;
     border-style: dashed;
     border-width: 2px;
+    border-radius: 15px;
     /* padding-top: 20px;
-                                              padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
@@ -188,6 +264,10 @@
   }
   .nest-item {
     padding: 0px;
-    margin: 0px 10px;
+    margin: 8px;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 15px;
   }
 </style>

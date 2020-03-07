@@ -48,13 +48,16 @@
     <Container>
       <Row style="padding: 8px;border-style: dashed;border-color: black; border-width: 1px">
         <Col style="border-style: dashed;border-color: blue; border-width: 1px">
-        <Button style="width: 100%; height: 30px; font-size:12px; margin-top: 5px;">All Field Selections</Button>
-          <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
+        <!-- start data source -->
+        <!-- <DataSource bind:props={props} /> -->
+        <!--  -->
+        <!-- <Button style="width: 100%; height: 30px; font-size:12px; margin-top: 5px;">All Field Selections</Button> -->
             <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
               <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
               <DataSource bind:props={props} />
               <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
             </Col>
+        <!-- stop data source
             {#each props.operations as e}
               <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
                 <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>

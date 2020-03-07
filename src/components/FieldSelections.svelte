@@ -1,15 +1,34 @@
 <script>
+  import { FieldTransform } from "../objects/FieldTransform.js";
   import ColumnMappingComponent from "../ColumnMappingComponent.svelte";
-
-  import { Col, Row, Container, Collapse, Button } from "sveltestrap";
+  import { afterUpdate } from "svelte";
+  import { Col, Row, Collapse, Button, Table, CustomInput } from "sveltestrap";
 
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
 
   let selectRowStyle = "padding: 5px 15px;";
 
+  // fields gets the input with all fields from the table
   export let fields = [];
+  $: fields = fields;
+  let fieldsProcessed = false;
 
+  // selected should be the final column selections/transformations
+  // this will be bound from the parent
+  export let selected = [];
+  $: selected = selected;
+
+  // temp is where we convert to baseline FieldTransform obejct for each column
+  let temp = [];
+  $: temp = temp;
+
+  // isOpen is used to keep track of opening/collapsing individual transformations
+  // per row of the table
+  // could keep a previous state version of this to be able to determine which was opened
+  let isOpen = Array(fields.length).fill(false);
+
+  // this just controls closing the modal
   export let display = "none";
   $: display = display;
 
@@ -22,7 +41,25 @@
     disabled = !disabled;
   };
 
-  let isOpen = Array(fields.length).fill(false);
+  afterUpdate(() => {
+    console.log("fieldsProcessed", fieldsProcessed);
+    if (!fieldsProcessed && fields.length > 0) {
+      fields.map((f, i) => {
+        temp[i] = new FieldTransform(
+          "Field",
+          false,
+          null,
+          f.table_name,
+          f.table_id,
+          f.field_name,
+          f.field_id
+        );
+      });
+      console.log("temp", temp);
+      temp = temp;
+      fieldsProcessed = true;
+    }
+  });
 </script>
 
 <div>
@@ -36,37 +73,52 @@
         <!-- <button type="button" on:click|preventDefault={() => handleSubmit(input)}>Submit</button> -->
       </div>
       <div class="modal-body">
-      {#each fields as f, i}
-        <div>
-          <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
-          <p style="display: inline;">F.concat_ws("_", first_name, last_name)</p>
-          <Collapse isOpen={isOpen[i]}>
-            <!-- <p>create transformation here</p> -->
-            <ColumnMappingComponent />
-          </Collapse>
-        </div>
-        <!-- <Row style={selectRowStyle}>
-          <Row>
-            <Col>
+        <Table>
+          <thead>
+            <tr>
+              <th>column</th>
+              <th>select</th>
+              <th>print</th>
+              <th>customize</th>
+            </tr>
+          </thead>
+          <tbody>
+          {#each fields as f, i}
+          <!-- this is a nice simple verison, just a button for each field to create the transformation -->
+            <!-- <div>
               <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
-            </Col>
-            <p>F.concat_ws("_", first_name, last_name)</p>
-          </Row>
-          <Row>
-            <Collapse isOpen={isOpen[i]}>
-              <p>create transformation here</p>
-            </Collapse>
-          </Row>
-        </Row> -->
-      {/each}
+              <Collapse isOpen={isOpen[i]}>
+                <ColumnMappingComponent />
+              </Collapse>
+            </div> -->
 
-        <!-- <ColumnTransform /> -->
-        <!-- <ColumnMappingComponent bind:disabled={disabled} bind:props={input.transform}/> -->
-        <!-- <pre>
-        {#if input !== null}
-          {input.transform.toString(null, 2)}
-        {/if}
-        </pre> -->
+            <!-- table version should offer a level of simplicity for table building -->
+            <tr>
+              <td>{f.field_name}</td>
+              <td>
+                <CustomInput
+                  type="switch"
+                  id={`exampleCustomSwitch-${f.field_id}`}
+                  name="customSwitch"
+                  bind:checked={selected[i]}/>
+              </td>
+              <td>
+                <Button on:click={() => {console.log(temp[i])}}>print</Button>
+              </td>
+              <td>
+                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
+                <Collapse isOpen={isOpen[i]}>
+                <ColumnMappingComponent bind:props={temp[i]}/>
+                </Collapse>
+              </td>
+            </tr>
+            <tr>
+              <!-- <Button on:click={() => {console.log(`checked: ${checked}`, fields)}}> print </Button> -->
+              {selected[i]}
+            </tr>
+          {/each}
+        </tbody>
+      </Table>
       </div>
     </div>
   </div>
