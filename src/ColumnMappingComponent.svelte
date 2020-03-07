@@ -27,8 +27,8 @@
     { id: 2, text: "Function" }
   ];
 
-  let fieldOptions = [];
-  $: fieldOptions = fieldOptions;
+  // let fieldOptions = [];
+  // $: fieldOptions = fieldOptions;
 
   let tableOptions = [];
   $: tableOptions = tableOptions;
@@ -81,7 +81,7 @@
     props.field.column_id = "";
     document.getElementById(`field-select-${uniqID}`).selectedIndex = 0;
     getField({ table_id: props.field.table_id }).then(data => {
-      fieldOptions = data;
+      props.fieldOptions = data;
     });
   };
   const handleSelectField = e => {
@@ -145,7 +145,7 @@
 
     if (props.field.column !== undefined && props.field.column !== "") {
       getField({ table_id: props.field.table_id }).then(data => {
-        fieldOptions = data;
+        props.fieldOptions = data;
       });
     }
   });
@@ -175,9 +175,11 @@
     </select>
     <select id={`field-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.column} on:change|preventDefault={handleSelectField}>
       <option>select field</option>
-      {#each fieldOptions as ft}
+      {#if props.fieldOptions !== undefined}
+      {#each props.fieldOptions as ft}
         <option id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
       {/each}
+      {/if}
     </select>
   {:else if props.type === 'Value'}
       <input id="value" placeholder="Value" bind:value={props.value} disabled={disabled}>
@@ -228,8 +230,8 @@
     margin: 8px;
     background-color: #52baeb;
     /* border-color: black;
-                                                                                                                                                                                                                                                                                                  border-style: dashed;
-                                                                                                                                                                                                                                                                                                  border-width: 2px; */
+                                                                                                                                                                                                                                                                                                          border-style: dashed;
+                                                                                                                                                                                                                                                                                                          border-width: 2px; */
   }
   .func-args {
     border-color: black;
@@ -237,7 +239,7 @@
     border-width: 2px;
     border-radius: 15px;
     /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
