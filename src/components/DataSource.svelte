@@ -47,7 +47,7 @@
       console.log(`table_id ${props.location.table_id}`);
       getField({ table_id: props.location.table_id }).then(data => {
         tableFields = data;
-        console.log(tableFields);
+        // console.log(tableFields);
       });
     }
     displaySelectFields = "block";
@@ -67,7 +67,7 @@
     </Input>
     {#if props.type === "query"}
       <Button class="float-none add-union-btn" on:click={handleOpenSelectFields}>Select Fields</Button>
-      <FieldSelections bind:fields={tableFields} bind:display={displaySelectFields}/>
+      <FieldSelections bind:selections={props.select} bind:fields={tableFields} bind:display={displaySelectFields}/>
     {/if}
     <DataLocation bind:props={props.location} />
   </Row>

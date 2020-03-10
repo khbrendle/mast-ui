@@ -11,7 +11,18 @@ export class DataLocation {
   }
 
   newDataLocation(database, schema, table, alias) {
-    return new DataLocation(database,  schema, table, alias);
+    return new DataLocation(database, null, schema, table, null, alias);
+  }
+
+  fromObject(o) {
+    return new DataLocation(
+      Object.keys(o).includes("database") ? o.database : '',
+      Object.keys(o).includes("database_id") ? o.database_id : '',
+      Object.keys(o).includes("schema") ? o.schema : '',
+      Object.keys(o).includes("table") ? o.table : '',
+      Object.keys(o).includes("table_id") ? o.table_id : '',
+      Object.keys(o).includes("alias") ? o.alias : ''
+    );
   }
 }
 

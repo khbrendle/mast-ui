@@ -42,7 +42,7 @@
 </script>
 
 <div>
-  <button type="button" on:click={logObj}>log object</button>
+  <!-- <button type="button" on:click={logObj}>log object</button> -->
   <div>
   <Button title="Make query" style="font-size:12px" on:click={handleMakeQuery}>Make query</Button>
     <Container>
@@ -57,7 +57,7 @@
               <DataSource bind:props={props} />
               <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
             </Col>
-        <!-- stop data source
+        <!-- stop data source -->
             {#each props.operations as e}
               <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
                 <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
@@ -75,7 +75,8 @@
     </Container>
     <hr>
     <pre>
-      {@html syntaxHighlight(JSON.stringify(props, null, 2))}
+      <!-- {@html syntaxHighlight(JSON.stringify(props, null, 2))} -->
+      {@html syntaxHighlight(props.toString())}
     </pre>
     <hr>
     <Container>

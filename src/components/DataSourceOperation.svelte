@@ -10,6 +10,9 @@
   export let props = newDataSourceOperation("query");
   $: props = props;
 
+  let tableFields = [];
+  $: tableFields = tableFields;
+
   let displaySelectFields = "none";
   const handleOpenSelectFields = () => {
     console.log("opening modal");
@@ -20,7 +23,7 @@
     console.log(`table_id ${props.source.location.table_id}`);
     getField({ table_id: props.source.location.table_id }).then(data => {
       // console.log(data);
-      props.source.select = data;
+      tableFields = data;
     });
     displaySelectFields = "block";
   };
@@ -31,6 +34,6 @@
 
 <Row>
   <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleOpenSelectFields}>Select Fields</Button>
-  <FieldSelections bind:fields={props.source.select} bind:display={displaySelectFields} />
+  <FieldSelections bind:selections={props.source.select} bind:fields={tableFields} bind:display={displaySelectFields} />
   <DataLocation bind:props={props.source.location} />
 </Row>

@@ -121,11 +121,30 @@ export class FieldTransform {
     }
   }
 
+  copy() {
+    var j = JSON.stringify(this);
+    return new FieldTransform().fromJSON(j)
+  }
+
   toString(replacer = null, spacing = 2) {
-    return JSON.stringify(this, replacer, spacing)
+    var r = this.copy();
+    r = r.deleteFieldOptions();
+    return JSON.stringify(r, replacer, spacing)
   }
 
   print() {
     return syntaxHighlight(this.toString(null, 2))
+  }
+
+  deleteFieldOptions() {
+    var r = this;
+    if (Object.keys(r).includes('fieldOptions')) {
+      delete r.fieldOptions;
+    }
+    var i;
+    for (i = 0; i < this.args.length; i++) {
+      r.args[i] = this.args[i].deleteFieldOptions();
+    }
+    return r;
   }
 }

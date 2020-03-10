@@ -98,42 +98,8 @@
       // props.args = props.args;
     }
 
-    // if (
-    //   props.field.column !== undefined &&
-    //   props.field.column !== "" &&
-    //   props.field.table_id !== undefined &&
-    //   props.field.table_id !== ""
-    // ) {
-    //   getField({ table_id: props.field.table_id }).then(data => {
-    //     fieldOptions = data;
-    //   });
-    // }
-
     // this helps the select menus for table and field
     props = props;
-  });
-  afterUpdate(() => {
-    //   //   // console.log("new props after update: ", props);
-    //   //   var i = props.args.indexOf(null);
-    //   //   // console.log(`removing arg at index ${i}`);
-    //   //   if (i >= 0) {
-    //   //     props.args.splice(i, 1);
-    //   //     // props.args = props.args;
-    //   //   }
-    //   //   // this helps the select menus for table and field
-    //   props = props;
-    //
-    // this didn't do anything
-    // var i;
-    // for (i = 0; i < props.args.length; i++) {
-    //   props.args[i] = props.args[i];
-    // }
-    //
-    // if (props.field.column !== undefined && props.field.column !== "") {
-    //   getField({ table_id: props.field.table_id }).then(data => {
-    //     fieldOptions = data;
-    //   });
-    // }
   });
 
   onMount(() => {
@@ -230,8 +196,8 @@
     margin: 8px;
     background-color: #52baeb;
     /* border-color: black;
-                                                                                                                                                                                                                                                                                                          border-style: dashed;
-                                                                                                                                                                                                                                                                                                          border-width: 2px; */
+                                                                                                                                                                                                                                                                                                            border-style: dashed;
+                                                                                                                                                                                                                                                                                                            border-width: 2px; */
   }
   .func-args {
     border-color: black;
@@ -239,7 +205,7 @@
     border-width: 2px;
     border-radius: 15px;
     /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;

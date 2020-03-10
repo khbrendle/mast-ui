@@ -67,7 +67,28 @@ export class DataSource {
     return this
   }
 
-
+  fromObject(o) {
+    return new DataSource(
+      o.type === undefined ? '' : o.type,
+      Object.keys(o).includes("is_arg") ? o.is_arg : '',
+      Object.keys(o).includes("select") ? o.select.map((v) => { return new FieldTransform().fromObject(v) }) : [],
+      Object.keys(o).includes("from") ?  new DataSource().fromObject(o.from) : {},
+      Object.keys(o).includes("location") ?  new DataLocation().fromObject(o.location) : {},
+      // this will need to be updated
+      Object.keys(o).includes("filter") ?  o.filter : null,
+      Object.keys(o).includes("operations") ?  o.operations.map((k) => { return new DataSourceOperation().fromObject(k) }) : [],
+      Object.keys(o).includes("level") ?  o.level : null,
+      Object.keys(o).includes("alias") ?  o.alias : null
+    );
+  }
+  toString() {
+    var r = this;
+    var i;
+    for (i = 0; i < this.select.length; i++) {
+      r.select[i] = this.select[i].deleteFieldOptions();
+    }
+    return JSON.stringify(r, null, 2)
+  }
 }
 
 export const newDataSource = DataSource.prototype.newDataSource;

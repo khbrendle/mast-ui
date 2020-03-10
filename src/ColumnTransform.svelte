@@ -28,7 +28,6 @@
 -->
 
 <ColumnMappingComponent bind:props={child_value} />
-<p> child value<br> </p>
 <!-- <div>{@html "<pre>" + JSON.stringify(child_value, null, 2) + "</pre>"}</div> -->
 <!-- <pre>{@html child_value.print()}</pre> -->
 <pre>{child_value.toString(null, 2)}</pre>

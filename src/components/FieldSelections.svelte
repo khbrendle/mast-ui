@@ -1,7 +1,7 @@
 <script>
   import { FieldTransform } from "../objects/FieldTransform.js";
   import ColumnMappingComponent from "../ColumnMappingComponent.svelte";
-  import { afterUpdate } from "svelte";
+  import { beforeUpdate, afterUpdate } from "svelte";
   import { Col, Row, Collapse, Button, Table, CustomInput } from "sveltestrap";
 
   let addUnionBtnStyle =
@@ -16,6 +16,9 @@
 
   // selected should be the final column selections/transformations
   // this will be bound from the parent
+  export let selections = [];
+  $: selections = selections;
+
   export let selected = [];
   $: selected = selected;
 
@@ -42,7 +45,7 @@
   };
 
   afterUpdate(() => {
-    console.log("fieldsProcessed", fieldsProcessed);
+    // console.log("fieldsProcessed", fieldsProcessed);
     if (!fieldsProcessed && fields.length > 0) {
       fields.map((f, i) => {
         temp[i] = new FieldTransform(
@@ -60,6 +63,20 @@
       fieldsProcessed = true;
     }
   });
+
+  beforeUpdate(() => {
+    console.log("selected");
+    console.log(selected);
+    console.log(temp);
+    selections = selected
+      .map((k, i) => {
+        return k ? temp[i] : null;
+      })
+      .filter(x => {
+        return x !== null;
+      });
+    console.log(selections);
+  });
 </script>
 
 <div>
@@ -76,9 +93,9 @@
         <Table>
           <thead>
             <tr>
-              <th>column</th>
-              <th>select</th>
-              <th>print</th>
+              <th style="width: 250px;">column</th>
+              <th style="width: 50px;">select</th>
+              <!-- <th>print</th> -->
               <th>customize</th>
             </tr>
           </thead>
@@ -102,19 +119,15 @@
                   name="customSwitch"
                   bind:checked={selected[i]}/>
               </td>
-              <td>
+              <!-- <td>
                 <Button on:click={() => {console.log(temp[i])}}>print</Button>
-              </td>
+              </td> -->
               <td>
                 <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
                 <Collapse isOpen={isOpen[i]}>
                 <ColumnMappingComponent bind:props={temp[i]}/>
                 </Collapse>
               </td>
-            </tr>
-            <tr>
-              <!-- <Button on:click={() => {console.log(`checked: ${checked}`, fields)}}> print </Button> -->
-              {selected[i]}
             </tr>
           {/each}
         </tbody>
