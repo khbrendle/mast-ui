@@ -54,6 +54,25 @@
 
   afterUpdate(() => {
     // console.log("fieldsProcessed", fieldsProcessed);
+    // if (!fieldsProcessed && fields.length > 0) {
+    //   fields.map((f, i) => {
+    //     temp[i] = new FieldTransform(
+    //       "Field",
+    //       false,
+    //       null,
+    //       f.table_name,
+    //       f.table_id,
+    //       f.field_name,
+    //       f.field_id
+    //     );
+    //   });
+    //   console.log("temp", temp);
+    //   temp = temp;
+    //   fieldsProcessed = true;
+    // }
+  });
+
+  beforeUpdate(() => {
     if (!fieldsProcessed && fields.length > 0) {
       fields.map((f, i) => {
         temp[i] = new FieldTransform(
@@ -70,9 +89,7 @@
       temp = temp;
       fieldsProcessed = true;
     }
-  });
 
-  beforeUpdate(() => {
     console.log("selected");
     console.log(selected);
     console.log(temp);
@@ -120,7 +137,7 @@
             </tr>
           </thead>
           <tbody>
-          {#each fields as f, i}
+          {#each temp as f, i}
           <!-- this is a nice simple verison, just a button for each field to create the transformation -->
             <!-- <div>
               <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
@@ -132,11 +149,11 @@
             <!-- table version should offer a level of simplicity for table building -->
             <tr>
               <td></td>
-              <td>{Object.keys(f).includes('alias')? f.alias : f.field_name}</td>
+              <td>{f.alias !== '' ? f.alias : f.field.column}</td>
               <td>
                 <CustomInput
                   type="switch"
-                  id={`exampleCustomSwitch-${f.field_id}`}
+                  id={`exampleCustomSwitch-${i}`}
                   name="customSwitch"
                   bind:checked={selected[i]}/>
               </td>
@@ -144,7 +161,7 @@
                 <Button on:click={() => {console.log(temp[i])}}>print</Button>
               </td> -->
               <td>
-                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{Object.keys(f).includes('alias')? f.alias : f.field_name}</Button>
+                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.alias !== '' ? f.alias : f.field.column}</Button>
                 <Collapse isOpen={isOpen[i]}>
                 <ColumnMappingComponent bind:props={temp[i]}/>
                 </Collapse>
