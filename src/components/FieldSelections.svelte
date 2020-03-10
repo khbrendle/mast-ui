@@ -2,7 +2,15 @@
   import { FieldTransform } from "../objects/FieldTransform.js";
   import ColumnMappingComponent from "../ColumnMappingComponent.svelte";
   import { beforeUpdate, afterUpdate } from "svelte";
-  import { Col, Row, Collapse, Button, Table, CustomInput } from "sveltestrap";
+  import {
+    Col,
+    Row,
+    Collapse,
+    Button,
+    Input,
+    Table,
+    CustomInput
+  } from "sveltestrap";
 
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
@@ -77,6 +85,17 @@
       });
     console.log(selections);
   });
+
+  var tmpCustomField = new FieldTransform();
+  const handleAddCustomField = () => {
+    // add staged mapping to selections array
+    temp = [...temp, tmpCustomField];
+    fields = [...fields, tmpCustomField];
+    // add true to selected array for new custom field
+    selected = [...selected, true];
+    // reset staging object for addition of another custome field
+    tmpCustomField = new FieldTransform();
+  };
 </script>
 
 <div>
@@ -93,6 +112,7 @@
         <Table>
           <thead>
             <tr>
+              <th style="width: 20px;"></th>
               <th style="width: 250px;">column</th>
               <th style="width: 50px;">select</th>
               <!-- <th>print</th> -->
@@ -111,7 +131,8 @@
 
             <!-- table version should offer a level of simplicity for table building -->
             <tr>
-              <td>{f.field_name}</td>
+              <td></td>
+              <td>{Object.keys(f).includes('alias')? f.alias : f.field_name}</td>
               <td>
                 <CustomInput
                   type="switch"
@@ -123,13 +144,26 @@
                 <Button on:click={() => {console.log(temp[i])}}>print</Button>
               </td> -->
               <td>
-                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.field_name}</Button>
+                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{Object.keys(f).includes('alias')? f.alias : f.field_name}</Button>
                 <Collapse isOpen={isOpen[i]}>
                 <ColumnMappingComponent bind:props={temp[i]}/>
                 </Collapse>
               </td>
             </tr>
           {/each}
+          <!-- this section if for creating custom field addition -->
+          <tr>
+            <td>
+              <Button on:click={handleAddCustomField}>+</Button>
+            </td>
+            <td>
+              <Input plaintext style="border: 1px solid black" bind:value={tmpCustomField.alias} ></Input>
+            </td>
+            <td></td>
+            <td>
+              <ColumnMappingComponent bind:props={tmpCustomField}/>
+            </td>
+          </tr>
         </tbody>
       </Table>
       </div>

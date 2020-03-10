@@ -36,9 +36,11 @@
   });
 </script>
 
-<Row>
+<!-- <Row> -->
   <!-- select database -->
-  <Col>
+  <!-- <Col> -->
+  <div style="display: inline-flex;">
+  <div style="padding-right: 5px;">
     <Label for="database-select" style="display: inline; width: 250px">Database</Label><br>
     <Input type="select" id="database-select" on:input={handleSelectDatabase} style="display: inline; width: 250px">
       <option disabled selected value> select a database </option>
@@ -48,9 +50,11 @@
         </option>
       {/each}
     </Input>
-  </Col>
+  </div>
+  <!-- </Col> -->
   <!-- select table based on database -->
-  <Col>
+  <!-- <Col> -->
+  <div style="padding-left: 5px;">
     <Label for="table-select" style="display: inline; width: 250px">Table</Label><br>
     <Input type="select" id="table-select" on:input={handleSelectTable} style="display: inline; width: 250px">
       <option disabled selected value> select a table </option>
@@ -60,5 +64,7 @@
         </option>
       {/each}
     </Input>
-  </Col>
-</Row>
+    </div>
+  </div>
+  <!-- </Col> -->
+<!-- </Row> -->

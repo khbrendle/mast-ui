@@ -60,16 +60,20 @@
 
 <!-- <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px"> -->
   <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
-  <Row>
-    <Input type="select" on:change={handleChangeType} style="width: 150px;">
+  <!-- <Row> -->
+    <div>
+    <Input type="select" on:change={handleChangeType} style="width: 150px; display: inline;">
       <option value="table">Table</option>
       <option value="query">Query</option>
     </Input>
     {#if props.type === "query"}
-      <Button class="float-none add-union-btn" on:click={handleOpenSelectFields}>Select Fields</Button>
+      <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
       <FieldSelections bind:selections={props.select} bind:fields={tableFields} bind:display={displaySelectFields}/>
     {/if}
+    </div>
+    <div>
     <DataLocation bind:props={props.location} />
-  </Row>
+    </div>
+  <!-- </Row> -->
   <!-- <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
 </Col> -->

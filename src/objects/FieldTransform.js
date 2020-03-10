@@ -1,7 +1,7 @@
 import { syntaxHighlight } from "../utils/utils.js"
 
 export class FieldTransform {
-  constructor(type, is_arg, arg_index, table, table_id, column, column_id, value, func, args) {
+  constructor(type, is_arg, arg_index, table, table_id, column, column_id, value, func, args, alias) {
     // console.log("start constructing");
     this.type = type === undefined ? 'Field' : type; // defaulting to field
     this.is_arg = is_arg === undefined ? false : is_arg;
@@ -15,6 +15,7 @@ export class FieldTransform {
     this.value = value === undefined ? '' : value;
     this.function = func === undefined ? '' : func;
     this.args = args === undefined ? [] : args;
+    this.alias = alias === undefined ? '' : alias;
     // $: this.args = this.args
     // console.log("end constructing: ", this)
   }
@@ -26,26 +27,32 @@ export class FieldTransform {
     idx === undefined ? false : true,
     idx === undefined ? null : idx, '', '', '', '', [])
   }
-  newField (idx) {
+  newField (idx, alias) {
     console.log("creating new field object");
     return new FieldTransform('Field',
-    idx === undefined ? false : true,
-    idx === undefined ? null : idx, '', '', '', '', [])
+      idx === undefined ? false : true,
+      idx === undefined ? null : idx, '', '', '', '', [],
+      alias === undefined ? null : alias
+    )
   }
   // create new value object
   // mostly used to reset if object type is changed
-  newValue (idx) {
+  newValue (idx, alias) {
     console.log("creating new value object");
     return new FieldTransform('Value', idx === undefined ? false : true,
-    idx === undefined ? null : idx, '', '', '', '', '', '', [])
+      idx === undefined ? null : idx, '', '', '', '', '', '', [],
+      alias === undefined ? null : alias
+    )
   }
   // create new function object
   // mostly used to reset if object type is changed
-  newFunction (idx) {
+  newFunction (idx, alias) {
     console.log(`creating new function object with index ${idx}`);
     return new FieldTransform('Function',
       idx === undefined ? false : true,
-      idx === undefined ? null : idx, '', '', '', '', '', '', [new FieldTransform().newField(0)])
+      idx === undefined ? null : idx, '', '', '', '', '', '', [new FieldTransform().newField(0)],
+      alias === undefined ? null : alias
+    )
   }
   // create wrapper around an object
   // this just pushes the current object into an argument of an un-named function
@@ -75,7 +82,8 @@ export class FieldTransform {
       Object.keys(o).includes("field") ? Object.keys(o.field).includes("column_id") ? o.field.column_id : '' : '',
       Object.keys(o).includes("value") ? o.value : '',
       Object.keys(o).includes("function") ? o.function : '',
-      Object.keys(o).includes("args") ? o.args.map( x => new FieldTransform().fromObject(x)) : []
+      Object.keys(o).includes("args") ? o.args.map( x => new FieldTransform().fromObject(x)) : [],
+      Object.keys(o).includes("alias") ? o.alias : '',
     );
     console.log("completed creating object");
     return x
@@ -109,15 +117,15 @@ export class FieldTransform {
   }
 
   // based on a type, initialize the correct values and reset any that may have existed
-  fromType(type, idx) {
+  fromType(type, idx, alias) {
     console.log(`got index ${idx} in new FieldTransform().fromType()`)
     switch (type) {
       case 'Field':
-        return new FieldTransform().newField(idx)
+        return new FieldTransform().newField(idx, alias)
       case 'Value':
-        return new FieldTransform().newValue(idx)
+        return new FieldTransform().newValue(idx, alias)
       case 'Function':
-        return new FieldTransform().newFunction(idx)
+        return new FieldTransform().newFunction(idx, alias)
     }
   }
 
@@ -148,3 +156,5 @@ export class FieldTransform {
     return r;
   }
 }
+
+export const newFieldTransform = FieldTransform.prototype.newDataSource;
