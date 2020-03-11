@@ -42,7 +42,7 @@
 </script>
 
 <div>
-  <!-- <button type="button" on:click={logObj}>log object</button> -->
+  <button type="button" on:click={logObj}>log object</button>
   <div>
   <Button title="Make query" style="font-size:12px" on:click={handleMakeQuery}>Make query</Button>
     <Container>

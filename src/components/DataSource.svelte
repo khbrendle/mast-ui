@@ -12,8 +12,14 @@
   export let props = newDataSource("table");
   $: props = props;
 
+  // export let selected = [];
+  // $: selected = selected;
+
   const logObj = () => {
+    console.log("props");
     console.log(props);
+    // console.log("selected");
+    // console.log(selected);
   };
   const hanldeJoinTable = () => {
     console.log("adding join");
@@ -33,6 +39,8 @@
   let displaySelectFields = "none";
   let tableFields = [];
   $: tableFields = tableFields;
+  let selected = [];
+  $: selected = selected;
   const handleOpenSelectFields = () => {
     console.log("opening modal");
     // if no fields fetched then get the fields
@@ -49,6 +57,7 @@
         tableFields = data;
         // console.log(tableFields);
       });
+      selected = Array(tableFields.length).fill(false);
     }
     displaySelectFields = "block";
   };
@@ -61,6 +70,7 @@
 <!-- <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px"> -->
   <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
   <!-- <Row> -->
+    <!-- <button type="button" on:click|preventDefault={logObj}>log</button> -->
     <div>
     <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
       <option value="table">Table</option>
@@ -68,7 +78,7 @@
     </select>
     {#if props.type === "query"}
       <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
-      <FieldSelections bind:selections={props.select} bind:fields={tableFields} bind:display={displaySelectFields}/>
+      <FieldSelections bind:selections={props.select} bind:selected={selected} bind:fields={tableFields} bind:display={displaySelectFields}/>
     {/if}
     </div>
     <div>

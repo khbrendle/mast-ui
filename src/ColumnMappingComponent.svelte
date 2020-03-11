@@ -2,15 +2,10 @@
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
   import { FieldTransform } from "./objects/FieldTransform.js";
   import { getTable, getField } from "./utils/api.js";
+  import { newRandomID } from "./utils/utils.js";
   import { Col, Row, Container, Input, CustomInput, Button } from "sveltestrap";
 
-  const uniqID =
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
+  const uniqID = newRandomID();
 
   export let disabled = false;
   $: disabled = disabled;
@@ -205,8 +200,8 @@
     margin: 8px;
     background-color: #52baeb;
     /* border-color: black;
-                                                                                                                                                                                                                                                                                                                border-style: dashed;
-                                                                                                                                                                                                                                                                                                                border-width: 2px; */
+                                                                                                                                                                                                                                                                                                                  border-style: dashed;
+                                                                                                                                                                                                                                                                                                                  border-width: 2px; */
   }
   .func-args {
     border-color: black;
@@ -214,7 +209,7 @@
     border-width: 2px;
     border-radius: 15px;
     /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;

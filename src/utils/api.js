@@ -1,7 +1,7 @@
 import { ObjectCache } from "./object_cache.js"
 
 const parseArgs = (args) => {
-  console.log(args);
+  // console.log(args);
   if (args !== undefined) {
     var res = []
     Object.entries(args).forEach(([k, v]) => res.push(`${k}=${v}`))

@@ -2,6 +2,7 @@
   import { FieldTransform } from "../objects/FieldTransform.js";
   import ColumnMappingComponent from "../ColumnMappingComponent.svelte";
   import { beforeUpdate, afterUpdate } from "svelte";
+  import { newRandomID } from "../utils/utils.js";
   import {
     Col,
     Row,
@@ -11,6 +12,8 @@
     Table,
     CustomInput
   } from "sveltestrap";
+
+  let uniqID = newRandomID();
 
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
@@ -96,6 +99,10 @@
 
     console.log("selected");
     console.log(selected);
+    // if (selected === undefined) {
+    //   selected = Array(fields.length).fill(false);
+    // }
+    console.log("temp");
     console.log(temp);
     selections = selected
       .map((k, i) => {
@@ -120,11 +127,16 @@
 
   const aliasInputStyle =
     "background: #eaeaea; border-radius: 7px; border: .5px solid #a0a0a0";
+  const handleLogButton = () => {
+    console.log("selected");
+    console.log(selected);
+  };
 </script>
 
 <div>
+  <!-- <button type="button" on:click|preventDefault={handleLogButton}></button> -->
   <!-- <Button class="float-none add-union-btn" style={addUnionBtnStyle}>Select Fields</Button> -->
-  <div id="fieldSelectModal" class="modal" style="display:{display};">
+  <div id={`fieldSelectModal-${uniqID}`} class="modal" style="display:{display};">
     <!-- Modal content -->
     <div class="modal-content">
       <div class="modal-header">
@@ -157,16 +169,17 @@
             <tr>
               <td></td>
               <td>
-                <Input plaintext bind:value={f.alias} style={aliasInputStyle} />
+                <input id={`field-alias-${uniqID}-${i}`} type="text" class="form-control-plaintext" bind:value={f.alias} style={aliasInputStyle} />
                 <!-- {f.alias !== '' ? f.alias : f.field.column} -->
               </td>
               <td>
                 <CustomInput
                   type="switch"
-                  id={`exampleCustomSwitch-${i}`}
+                  id={`exampleCustomSwitch-${uniqID}-${i}`}
                   name="customSwitch"
                   bind:checked={selected[i]}/>
               </td>
+
               <!-- <td>
                 <Button on:click={() => {console.log(temp[i])}}>print</Button>
               </td> -->
@@ -184,7 +197,7 @@
               <Button on:click={handleAddCustomField}>+</Button>
             </td>
             <td>
-              <Input plaintext bind:value={tmpCustomField.alias} style={aliasInputStyle} />
+              <input id={`field-alias-${uniqID}-tmp`} type="text" class="form-control-plaintext" bind:value={tmpCustomField.alias} style={aliasInputStyle} />
             </td>
             <td></td>
             <td>

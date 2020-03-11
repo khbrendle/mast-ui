@@ -4,7 +4,7 @@
 import { newDataLocation } from "./DataLocation.js"
 
 export class DataSource {
-  constructor(type, select, from, location, filter, operations, level, alias) {
+  constructor(type, select, from, location, filter, operations, level, alias, selected) {
     // 'query', 'subquery', or 'table'
     // default 'table'
     this.type = type === undefined ? null : type;
@@ -27,6 +27,8 @@ export class DataSource {
     this.level = level === undefined ? 0 : level;
     // table alias should be a very unique name to be able to differentiate sources in a query
     this.alias = alias === undefined ? null : alias;
+    // for front-end use only to hold state information
+    this.selected = selected === undefined ? [] : selected;
   }
 
   newDataSource(type) {
@@ -81,12 +83,24 @@ export class DataSource {
       Object.keys(o).includes("alias") ?  o.alias : null
     );
   }
+
+  fromJSON(j) {
+    var x = JSON.parse(j);
+    return new DataSource().fromObject(x);
+  }
+
+  copy() {
+    var j = JSON.stringify(this);
+    return new DataSource().fromJSON(j);
+  }
+
   toString() {
     var r = this;
     var i;
-    for (i = 0; i < this.select.length; i++) {
-      r.select[i] = this.select[i].deleteFieldOptions();
+    for (i = 0; i < r.select.length; i++) {
+      r.select[i] = r.select[i].deleteFieldOptions();
     }
+    // delete r.selected
     return JSON.stringify(r, null, 2)
   }
 }
