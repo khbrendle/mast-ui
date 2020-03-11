@@ -61,7 +61,7 @@
             {#each props.operations as e}
               <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
                 <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
-                <DataSourceOperation bind:props={e} />
+                <DataSource bind:props={e.source} />
                 <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
               </Col>
             {/each}

@@ -25,10 +25,10 @@
   const handleAddJoin = () => {
     console.log("adding join");
   };
-  const handleChangeType = e => {
-    props.type = e.target.value;
-    console.log(props);
-  };
+  // const handleChangeType = e => {
+  //   props.type = e.target.value;
+  //   console.log(props);
+  // };
 
   let displaySelectFields = "none";
   let tableFields = [];
@@ -62,10 +62,10 @@
   <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
   <!-- <Row> -->
     <div>
-    <Input type="select" on:change={handleChangeType} style="width: 150px; display: inline;">
+    <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
       <option value="table">Table</option>
       <option value="query">Query</option>
-    </Input>
+    </select>
     {#if props.type === "query"}
       <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
       <FieldSelections bind:selections={props.select} bind:fields={tableFields} bind:display={displaySelectFields}/>

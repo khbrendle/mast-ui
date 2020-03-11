@@ -56,13 +56,13 @@ export class FieldTransform {
   }
   // create wrapper around an object
   // this just pushes the current object into an argument of an un-named function
-  newWrapper (is_arg, argsIndex, prop) {
+  newWrapper (is_arg, argsIndex, prop, alias) {
     console.log("creating new wrapper object for type ", prop.type);
     console.log("input instance of Array? ", prop instanceof Array)
     console.log("input instance of FieldTransform? ", prop instanceof FieldTransform)
     prop.is_arg = true
     prop.arg_index = 0
-    return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', '', '', [prop])
+    return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', '', '', [prop], alias)
   }
   fromJSON (x) {
     console.log("creating object from string");

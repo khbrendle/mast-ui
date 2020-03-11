@@ -82,7 +82,11 @@
           f.table_name,
           f.table_id,
           f.field_name,
-          f.field_id
+          f.field_id,
+          null,
+          null,
+          [],
+          f.field_name
         );
       });
       console.log("temp", temp);
@@ -113,6 +117,9 @@
     // reset staging object for addition of another custome field
     tmpCustomField = new FieldTransform();
   };
+
+  const aliasInputStyle =
+    "background: #eaeaea; border-radius: 7px; border: .5px solid #a0a0a0";
 </script>
 
 <div>
@@ -149,7 +156,10 @@
             <!-- table version should offer a level of simplicity for table building -->
             <tr>
               <td></td>
-              <td>{f.alias !== '' ? f.alias : f.field.column}</td>
+              <td>
+                <Input plaintext bind:value={f.alias} style={aliasInputStyle} />
+                <!-- {f.alias !== '' ? f.alias : f.field.column} -->
+              </td>
               <td>
                 <CustomInput
                   type="switch"
@@ -174,7 +184,7 @@
               <Button on:click={handleAddCustomField}>+</Button>
             </td>
             <td>
-              <Input plaintext style="border: 1px solid black" bind:value={tmpCustomField.alias} ></Input>
+              <Input plaintext bind:value={tmpCustomField.alias} style={aliasInputStyle} />
             </td>
             <td></td>
             <td>

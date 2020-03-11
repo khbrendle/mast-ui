@@ -52,7 +52,12 @@
   };
 
   const handleWrap = () => {
-    props = new FieldTransform().newWrapper(props.is_arg, props.arg_index, props);
+    props = new FieldTransform().newWrapper(
+      props.is_arg,
+      props.arg_index,
+      props,
+      props.alias
+    );
   };
 
   const handleMoveArgUp = idx => {
@@ -200,8 +205,8 @@
     margin: 8px;
     background-color: #52baeb;
     /* border-color: black;
-                                                                                                                                                                                                                                                                                                              border-style: dashed;
-                                                                                                                                                                                                                                                                                                              border-width: 2px; */
+                                                                                                                                                                                                                                                                                                                border-style: dashed;
+                                                                                                                                                                                                                                                                                                                border-width: 2px; */
   }
   .func-args {
     border-color: black;
@@ -209,7 +214,7 @@
     border-width: 2px;
     border-radius: 15px;
     /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
