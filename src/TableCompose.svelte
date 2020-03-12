@@ -16,10 +16,6 @@
   let props = newDataSource("table");
   $: props = props;
 
-  // const handleSourceTypeSelect = e => {
-  //   data_source = newDataSource("table");
-  //   console.log(data_source);
-  // };
   const logObj = () => {
     console.log(props);
   };
@@ -46,25 +42,15 @@
   <div>
   <Button title="Make query" style="font-size:12px" on:click={handleMakeQuery}>Make query</Button>
     <Container>
-      <Row style="padding: 8px;border-style: dashed;border-color: black; border-width: 1px">
-        <Col style="border-style: dashed;border-color: blue; border-width: 1px">
+      <Row style="padding: 8px; border: 1px dashed black;">
+        <Col style="padding: 8px; border: 1px dashed blue;">
         <!-- start data source -->
-        <!-- <DataSource bind:props={props} /> -->
-        <!--  -->
         <!-- <Button style="width: 100%; height: 30px; font-size:12px; margin-top: 5px;">All Field Selections</Button> -->
-            <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
-              <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
               <DataSource bind:props={props} />
-              <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
-            </Col>
         <!-- stop data source -->
-            {#each props.operations as e}
-              <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px">
-                <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
+            <!-- {#each props.operations as e}
                 <DataSource bind:props={e.source} />
-                <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
-              </Col>
-            {/each}
+            {/each} -->
             <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
         </Col>
         <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>

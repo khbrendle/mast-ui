@@ -24,17 +24,6 @@
   const hanldeJoinTable = () => {
     console.log("adding join");
   };
-  const handleAddUnion = () => {
-    console.log("adding union");
-    props.operations = [...props.operations, newDataSourceOperation("union")];
-  };
-  const handleAddJoin = () => {
-    console.log("adding join");
-  };
-  // const handleChangeType = e => {
-  //   props.type = e.target.value;
-  //   console.log(props);
-  // };
 
   let displaySelectFields = "none";
   let tableFields = [];
@@ -62,28 +51,47 @@
     displaySelectFields = "block";
   };
 
+  const handleAddUnion = () => {
+    console.log("adding union");
+    props = props.setType("query");
+
+    props.operations = [
+      ...props.operations,
+      newDataSourceOperation("union", newDataSource("query"))
+    ];
+  };
+  const handleAddJoin = () => {
+    console.log("adding join");
+  };
+
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
-  let addJoinBtnStyle = "font-size: 10px; height: 80px; margin-bottom: 8px;";
+  let addJoinBtnStyle = "font-size: 10px; height: 124px;";
 </script>
 
 <!-- <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px"> -->
+  <div>
+  <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
+  <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px; max-width: 95%;">
   <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
-  <!-- <Row> -->
-    <!-- <button type="button" on:click|preventDefault={logObj}>log</button> -->
     <div>
-    <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
-      <option value="table">Table</option>
-      <option value="query">Query</option>
-    </select>
-    {#if props.type === "query"}
-      <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
-      <FieldSelections bind:selections={props.select} bind:selected={selected} bind:fields={tableFields} bind:display={displaySelectFields}/>
-    {/if}
+      <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
+        <option value="table">Table</option>
+        <option value="query">Query</option>
+      </select>
+      {#if props.type === "query"}
+        <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
+        <FieldSelections bind:selections={props.select} bind:selected={selected} bind:fields={tableFields} bind:display={displaySelectFields}/>
+      {/if}
     </div>
-    <div>
     <DataLocation bind:props={props.location} />
-    </div>
-  <!-- </Row> -->
-  <!-- <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
-</Col> -->
+    <!-- <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button> -->
+    </Col>
+  </div>
+<!-- </Col> -->
+<Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
+<div style='border: 1px dashed green; padding: 10px;'>
+  {#each props.operations as e}
+      <svelte:self bind:props={e.source} />
+  {/each}
+</div>

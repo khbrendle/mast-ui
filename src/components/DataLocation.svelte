@@ -22,7 +22,7 @@
   const handleSelectTable = e => {
     console.log("selecting table");
     props.table_id = e.target.options[e.target.selectedIndex].id;
-    // props.table = e.target.value;
+    props.table = e.target.value;
   };
 
   let databases = [];
@@ -42,7 +42,7 @@
   <div style="display: inline-flex;">
   <div style="padding-right: 5px;">
     <Label for="database-select" style="display: inline; width: 250px">Database</Label><br>
-    <Input type="select" id="database-select" on:input={handleSelectDatabase} bind:value={props.table} style="display: inline; width: 250px">
+    <Input type="select" id="database-select" on:input={handleSelectDatabase} style="display: inline; width: 250px">
       <option disabled selected value> select a database </option>
       {#each databases as db}
         <option id={db.database_id} value={db.database_name}>
