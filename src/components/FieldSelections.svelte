@@ -185,7 +185,7 @@
               </td> -->
               <td>
                 <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.alias !== '' ? f.alias : f.field.column}</Button>
-                <Collapse isOpen={isOpen[i]}>
+                <Collapse isOpen={isOpen[i]} >
                 <ColumnMappingComponent bind:props={temp[i]}/>
                 </Collapse>
               </td>

@@ -38,22 +38,16 @@
 </script>
 
 <div>
-  <button type="button" on:click={logObj}>log object</button>
+  <!-- <button type="button" on:click={logObj}>log object</button> -->
   <div>
   <Button title="Make query" style="font-size:12px" on:click={handleMakeQuery}>Make query</Button>
-    <Container>
-      <Row style="padding: 8px; border: 1px dashed black;">
-        <Col style="padding: 8px; border: 1px dashed blue;">
+    <Container style="max-width: 95%">
+      <Row style="padding: 8px; border: 1px dashed black; overflow: scroll; flex-wrap: nowrap;">
         <!-- start data source -->
         <!-- <Button style="width: 100%; height: 30px; font-size:12px; margin-top: 5px;">All Field Selections</Button> -->
               <DataSource bind:props={props} />
         <!-- stop data source -->
-            <!-- {#each props.operations as e}
-                <DataSource bind:props={e.source} />
-            {/each} -->
-            <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
-        </Col>
-        <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
+        <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
         <!-- this button should split the black box -->
         <!-- <Button class="float-right" style="margin-left: 6px; margin-bottom: 0; font-size:10px" on:click={handleAddJoin}>add<br>join</Button>
         <Button class="float-none" style="width: 100%; margin: 6px 0px 0px 0px; height: 20px; font-size:10px" on:click={handleAddUnion}>add union</Button> -->
@@ -61,12 +55,11 @@
     </Container>
     <hr>
     <pre>
-      <!-- {@html syntaxHighlight(JSON.stringify(props, null, 2))} -->
       {@html syntaxHighlight(props.toString())}
     </pre>
     <hr>
     <Container>
-      <Row style="padding: 10px;border-style: dashed;border-color: black; border-width: 1px">
+      <Row style="padding: 10px; border-style: dashed; border-color: black; border-width: 1px">
         <Col style="padding: 10px;border-style: dashed;border-color: blue; border-width: 1px">
           <Row>
             <Col style="margin: 15px; border-style: dashed;border-color: red; border-width: 1px">table_1</Col>

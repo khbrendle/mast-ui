@@ -121,7 +121,7 @@
   });
 </script>
 
-<div class='outer'>
+<div class="outer" style="padding: 5px; border-radius: 5px;">
   <Input type="select" style="display: inline; width: fit-content;" disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
       <option id={type.id} value={type.text} selected={props.type === type.text ? true : false}>
@@ -129,10 +129,11 @@
       </option>
     {/each}
   </Input>
+  <Button>add equality</Button>
 
-  <Button class='float-right' type='button' disabled={props.is_arg ? false : true} on:click={handleDelete}>delete</Button>
+  <Button class='float-right' disabled={props.is_arg ? false : true} on:click={handleDelete}>delete</Button>
   <Button class='float-right' disabled={disabled} on:click={handleWrap}>wrap</Button>
-  <Button class='float-right' disabled={disabled} on:click={handleReset}>refresh</Button>
+  <Button class='float-right' disabled={disabled} on:click={handleReset}>reset</Button>
 
   <div class="inner">
   {#if props.type === 'Field'}
@@ -177,6 +178,9 @@
     {alert("Type not supported")}
   {/if}
   </div>
+  {#if props.equality.operator !== ""}
+    <p>equality info</p>
+  {/if}
 </div>
 
 <style>
@@ -193,15 +197,18 @@
     /* display: flex; */
     /* background-color: #52baeb; */
     /* margin: 10px; */
-    padding: 10px;
+
+    /* padding: 10px; */
   }
   .outer {
+    padding: 5px;
     /* margin: 5px; */
     margin: 8px;
-    background-color: #52baeb;
+    border: 1px solid black;
+    /* background-color: #52baeb; */
     /* border-color: black;
-                                                                                                                                                                                                                                                                                                                  border-style: dashed;
-                                                                                                                                                                                                                                                                                                                  border-width: 2px; */
+                                                                                                                                                                                                                                                                                                                                                            border-style: dashed;
+                                                                                                                                                                                                                                                                                                                                                            border-width: 2px; */
   }
   .func-args {
     border-color: black;
@@ -209,7 +216,7 @@
     border-width: 2px;
     border-radius: 15px;
     /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      padding-bottom: 20px; */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;

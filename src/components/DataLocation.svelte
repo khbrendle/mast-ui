@@ -10,7 +10,7 @@
   const handleSelectDatabase = e => {
     console.log("selecting database");
     // set database
-    props.database = e.target.value;
+    // props.database = e.target.value;
     var id = e.target.options[e.target.selectedIndex].id;
     // console.log(`database_id ${id}`);
     // get tables
@@ -36,35 +36,29 @@
   });
 </script>
 
-<!-- <Row> -->
-  <!-- select database -->
-  <!-- <Col> -->
-  <div style="display: inline-flex;">
-  <div style="padding-right: 5px;">
-    <Label for="database-select" style="display: inline; width: 250px">Database</Label><br>
-    <Input type="select" id="database-select" on:input={handleSelectDatabase} style="display: inline; width: 250px">
-      <option disabled selected value> select a database </option>
-      {#each databases as db}
-        <option id={db.database_id} value={db.database_name}>
-          {db.database_name}
-        </option>
-      {/each}
-    </Input>
+<!-- select database -->
+<div style="display: inline-flex;">
+<div style="padding-right: 5px;">
+  <Label for="database-select" style="display: inline; width: 250px;">Database</Label><br>
+  <select class="form-control" id="database-select" on:input={handleSelectDatabase} bind:value={props.database} style="display: inline; width: 250px; margin: unset;">
+    <option disabled selected value> select a database </option>
+    {#each databases as db}
+      <option id={db.database_id} value={db.database_name}>
+        {db.database_name}
+      </option>
+    {/each}
+  </select>
+</div>
+<!-- select table based on database -->
+<div style="padding-left: 5px;">
+  <Label for="table-select" style="display: inline; width: 250px;">Table</Label><br>
+  <select class="form-control" id="table-select" on:input={handleSelectTable} style="display: inline; width: 250px; margin: unset;">
+    <option disabled selected value> select a table </option>
+    {#each tables as tbl}
+      <option id={tbl.table_id} value={tbl.table_name}>
+        {tbl.table_name}
+      </option>
+    {/each}
+  </select>
   </div>
-  <!-- </Col> -->
-  <!-- select table based on database -->
-  <!-- <Col> -->
-  <div style="padding-left: 5px;">
-    <Label for="table-select" style="display: inline; width: 250px">Table</Label><br>
-    <Input type="select" id="table-select" on:input={handleSelectTable} style="display: inline; width: 250px">
-      <option disabled selected value> select a table </option>
-      {#each tables as tbl}
-        <option id={tbl.table_id} value={tbl.table_name}>
-          {tbl.table_name}
-        </option>
-      {/each}
-    </Input>
-    </div>
-  </div>
-  <!-- </Col> -->
-<!-- </Row> -->
+</div>

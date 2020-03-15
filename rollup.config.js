@@ -3,8 +3,6 @@ import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-// import nodeBuiltins from 'rollup-plugin-node-builtins';
-// import nodeGlobals from 'rollup-plugin-node-globals';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -37,8 +35,6 @@ export default {
 			dedupe: importee => importee === 'svelte' || importee.startsWith('svelte/')
 		}),
 		commonjs(),
-		// nodeBuiltins(),
-		// nodeGlobals(),
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
 		!production && serve(),

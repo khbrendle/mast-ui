@@ -1,7 +1,8 @@
 import { syntaxHighlight } from "../utils/utils.js"
+// import { Equality } from "./Equality.js"
 
 export class FieldTransform {
-  constructor(type, is_arg, arg_index, table, table_id, column, column_id, value, func, args, alias) {
+  constructor(type, is_arg, arg_index, table, table_id, column, column_id, value, func, args, alias, chain_methods, equality) {
     // console.log("start constructing");
     this.type = type === undefined ? 'Field' : type; // defaulting to field
     this.is_arg = is_arg === undefined ? false : is_arg;
@@ -15,6 +16,10 @@ export class FieldTransform {
     this.value = value === undefined ? '' : value;
     this.function = func === undefined ? '' : func;
     this.args = args === undefined ? [] : args;
+    // need to implement
+    this.chain_methods = chain_methods === undefined ? [] : chain_methods;
+    //
+    this.equality = equality === undefined ? {} : equality;
     this.alias = alias === undefined ? '' : alias;
     // $: this.args = this.args
     // console.log("end constructing: ", this)
@@ -84,6 +89,8 @@ export class FieldTransform {
       Object.keys(o).includes("function") ? o.function : '',
       Object.keys(o).includes("args") ? o.args.map( x => new FieldTransform().fromObject(x)) : [],
       Object.keys(o).includes("alias") ? o.alias : '',
+      Object.keys(o).includes("chain_methods") ? o.chain_methods.map( x => new FieldTransform().fromObject(x)) : [],
+      Object.keys(o).includes("equality") ? new Equality().fromObject(o.equality) : {},
     );
     console.log("completed creating object");
     return x
@@ -158,3 +165,20 @@ export class FieldTransform {
 }
 
 export const newFieldTransform = FieldTransform.prototype.newDataSource;
+
+export class Equality {
+  constructor(operator, arg) {
+    // the entity describes how to join tables
+    // >, <, ==, etc.
+    this.operator = operator === undefined ? "" : operator;
+    // FieldTransform object
+    this.arg = arg === undefined ? new FieldTransform() : arg;
+  }
+
+  fromObject(o) {
+    return new Equality(
+      Object.keys(o).includes("operator") ?  o.operator : "",
+      Object.keys(o).includes("arg") ?  new FieldTransform().fromObject(o.arg) : {}
+    )
+  }
+}

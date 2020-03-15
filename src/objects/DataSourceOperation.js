@@ -4,7 +4,7 @@ import { OperationType, newOperationType} from './OperationType.js';
 export class DataSourceOperation {
   constructor(type, source, level) {
     // 'union' or 'join'
-    this.type = type === undefined ? {} : type;
+    this.type = type === undefined ? new OperationType() : type;
     // DataSource obejct, can be query, subquery, or table
     this.source = source === undefined ? newDataSource(type) : source;
     // nesting level for pretty-printing

@@ -1,16 +1,12 @@
 <script>
 	import { onMount, beforeUpdate } from "svelte";
-	// import ColumnMappingComponent from "./ColumnMappingComponent.svelte";
-	import ColumnTransform from "./ColumnTransform.svelte";
-	// import GraphViz from "./GraphViz.svelte";
-	import Home from "./Home.svelte";
-	// import TableTransform from "./TableTransform.svelte";
-	import UploadData from "./UploadData.svelte";
-
+	import { Container, Row, Col } from "sveltestrap";
 	import { Router, Link, Route } from "svelte-routing";
 
-	// import TableCompose from "./TableCompose.svelte";
-	import { Container, Row, Col } from "sveltestrap";
+	import Home from "./Home.svelte";
+	import ColumnTransform from "./ColumnTransform.svelte";
+	import UploadData from "./UploadData.svelte";
+	import TableCompose from "./TableCompose.svelte";
 
 	export let url = "";
 </script>
@@ -39,27 +35,15 @@
 				<Row>
 					<Col class="nav-link" style='background: white;'><Link to="/" style>Home</Link></Col>
 					<Col class="nav-link" style='background: #e6e6e6;'><Link to="column-transform">Column Transform</Link></Col>
-					<!-- <Col class="nav-link" style='background: white;'><Link to="table-transform">Table Transform</Link></Col> -->
+					<Col class="nav-link" style='background: white;'><Link to="table-transform">Table Transform</Link></Col>
 					<Col class="nav-link" style='background: #e6e6e6;'><Link to="upload-data">Upload Data</Link></Col>
 				</Row>
 			</Container>
-			<!-- <span class="nav-link">
-				<Link to="/">Home</Link>
-			</span>
-			<span class="nav-link">
-				<Link to="column-transform">Column Transform</Link>
-			</span>
-			<span class="nav-link">
-				<Link to="table-transform">Table Transform</Link>
-			</span>
-			<span class="nav-link">
-				<Link to="upload-data">Upload Data</Link>
-			</span> -->
 		</nav>
 		<div>
 		<Route path="/"><Home /></Route>
 			<Route path="column-transform" component="{ColumnTransform}" />
-			<!-- <Route path="table-transform" component="{TableTransform}" /> -->
+			<Route path="table-transform" component="{TableCompose}" />
 			<Route path="upload-data" component="{UploadData}" />
 		</div>
 	</Router>

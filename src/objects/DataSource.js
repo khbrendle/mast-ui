@@ -1,7 +1,7 @@
 // const xid = require('xid-js');
 // import 'xid-js';
 
-import { newDataLocation } from "./DataLocation.js"
+import { DataLocation, newDataLocation } from "./DataLocation.js"
 
 export class DataSource {
   constructor(type, select, from, location, filter, operations, level, alias, selected) {
@@ -16,7 +16,7 @@ export class DataSource {
     this.from = from === undefined ? null : from;
     // describes a table location; database, schema, table, and alias
     // should be a DataLocation object
-    this.location = location === undefined ? {} : location;
+    this.location = location === undefined ? new DataLocation() : location;
     // any filters that need to be applied in a query/subquery
     this.filter = filter === undefined ? null : filter;
     // operation describes how to join or union another source
@@ -96,9 +96,16 @@ export class DataSource {
 
   toString() {
     var r = this;
-    var i;
+    var i, i2;
     for (i = 0; i < r.select.length; i++) {
       r.select[i] = r.select[i].deleteFieldOptions();
+    }
+    for (i = 0; i < r.operations.length; i++) {
+      if (r.operations[i].type.method === "join") {
+        for (i2 = 0; i2 < r.operations[i].type.join_on.length; i2++) {
+          r.operations[i].type.join_on[i2].entity = r.operations[i].type.join_on[i2].entity.deleteFieldOptions();
+        }
+      }
     }
     // delete r.selected
     return JSON.stringify(r, null, 2)

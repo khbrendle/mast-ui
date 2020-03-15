@@ -1,11 +1,13 @@
 <script>
   import { newDataSource, newDataSourceQuery } from "../objects/DataSource.js";
   import { newDataSourceOperation } from "../objects/DataSourceOperation.js";
+  import { newOperationType } from "../objects/OperationType.js";
   import { syntaxHighlight } from "../utils/utils.js";
   import { getField } from "../utils/api.js";
   import { Col, Container, Row, Button, Input, Label } from "sveltestrap";
   import DataLocation from "./DataLocation.svelte";
   import FieldSelections from "./FieldSelections.svelte";
+  import OperationType from "./OperationType.svelte";
 
   let rowStyle = "border-style: dashed;border-color: black; border-width: 1px";
 
@@ -57,23 +59,36 @@
 
     props.operations = [
       ...props.operations,
-      newDataSourceOperation("union", newDataSource("query"))
+      newDataSourceOperation(newOperationType("union"), newDataSource("query"))
     ];
   };
   const handleAddJoin = () => {
     console.log("adding join");
+    if (props.type !== "query") {
+      props = props.setType("query");
+    }
+
+    props.operations = [
+      ...props.operations,
+      newDataSourceOperation(newOperationType("join"), newDataSource("query"))
+    ];
+  };
+
+  let operationTypeDisplay = "none";
+  const handleJoinDetails = () => {
+    operationTypeDisplay = "block";
   };
 
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
-  let addJoinBtnStyle = "font-size: 10px; height: 124px;";
+  let addJoinBtnStyle = "font-size: 10px; height: 124px; width: 6%";
 </script>
 
-<!-- <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px"> -->
+<Col style="padding: 8px; border: 1px dashed blue; min-width: 630px;">
+  {#if props.type === "query"}
   <div>
-  <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
-  <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border-style: dashed;border-color: red; border-width: 1px; max-width: 95%;">
-  <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
+    <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
+    <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border: 1px dashed red; max-width: 93%;">
     <div>
       <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
         <option value="table">Table</option>
@@ -85,13 +100,28 @@
       {/if}
     </div>
     <DataLocation bind:props={props.location} />
-    <!-- <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button> -->
     </Col>
   </div>
-<!-- </Col> -->
-<Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
-<div style='border: 1px dashed green; padding: 10px;'>
-  {#each props.operations as e}
-      <svelte:self bind:props={e.source} />
-  {/each}
-</div>
+  <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
+  <!-- unions -->
+  {#if props.operations.length > 0}
+  <div style='border: 1px dashed green; padding: 10px; overflow: scroll; flex-wrap: nowrap; display: flex'>
+    {#each props.operations as e}
+        {#if e.type.method === "union"}
+          <svelte:self bind:props={e.source} />
+        {/if}
+    {/each}
+  </div>
+  {/if}
+  {:else}
+  <DataLocation bind:props={props.location} />
+  {/if}
+</Col>
+<!-- joins -->
+{#each props.operations as e}
+  {#if e.type.method === "join"}
+    <Button style="margin: 5px;" on:click={handleJoinDetails}>join<br>details</Button>
+    <OperationType bind:display={operationTypeDisplay} bind:props={e.type} />
+    <svelte:self bind:props={e.source} />
+  {/if}
+{/each}
