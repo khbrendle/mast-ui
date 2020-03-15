@@ -22,7 +22,7 @@
   const handleSelectTable = e => {
     console.log("selecting table");
     props.table_id = e.target.options[e.target.selectedIndex].id;
-    props.table = e.target.value;
+    // props.table = e.target.value;
   };
 
   let databases = [];
@@ -40,7 +40,7 @@
 <div style="display: inline-flex;">
 <div style="padding-right: 5px;">
   <Label for="database-select" style="display: inline; width: 250px;">Database</Label><br>
-  <select class="form-control" id="database-select" on:input={handleSelectDatabase} bind:value={props.database} style="display: inline; width: 250px; margin: unset;">
+  <select class="form-control" id="database-select" on:change|preventDefault={handleSelectDatabase} bind:value={props.database} style="display: inline; width: 250px; margin: unset;">
     <option disabled selected value> select a database </option>
     {#each databases as db}
       <option id={db.database_id} value={db.database_name}>
@@ -52,7 +52,7 @@
 <!-- select table based on database -->
 <div style="padding-left: 5px;">
   <Label for="table-select" style="display: inline; width: 250px;">Table</Label><br>
-  <select class="form-control" id="table-select" on:input={handleSelectTable} style="display: inline; width: 250px; margin: unset;">
+  <select class="form-control" id="table-select" on:change|preventDefault={handleSelectTable} bind:value={props.table} style="display: inline; width: 250px; margin: unset;">
     <option disabled selected value> select a table </option>
     {#each tables as tbl}
       <option id={tbl.table_id} value={tbl.table_name}>
