@@ -30,33 +30,44 @@ export class FieldTransform {
     console.log("creating new field object");
     return new FieldTransform('Field',
     idx === undefined ? false : true,
-    idx === undefined ? null : idx, '', '', '', '', [])
+    idx === undefined ? null : idx,
+    '', '', '', '', '', '', [])
   }
-  newField (idx, alias) {
+  newField (idx, alias, equality) {
     console.log("creating new field object");
     return new FieldTransform('Field',
       idx === undefined ? false : true,
-      idx === undefined ? null : idx, '', '', '', '', [],
-      alias === undefined ? null : alias
+      idx === undefined ? null : idx,
+      '', '', '', '', '', '', [],
+      alias === undefined ? null : alias,
+      [],
+      equality == undefined ? undefined: equality
     )
   }
   // create new value object
   // mostly used to reset if object type is changed
-  newValue (idx, alias) {
+  newValue (idx, alias, equality) {
     console.log("creating new value object");
-    return new FieldTransform('Value', idx === undefined ? false : true,
-      idx === undefined ? null : idx, '', '', '', '', '', '', [],
-      alias === undefined ? null : alias
+    return new FieldTransform('Value',
+      idx === undefined ? false : true,
+      idx === undefined ? null : idx,
+      '', '', '', '', '', '', [],
+      alias === undefined ? null : alias,
+      [],
+      equality == undefined ? null: equality
     )
   }
   // create new function object
   // mostly used to reset if object type is changed
-  newFunction (idx, alias) {
+  newFunction (idx, alias, equality) {
     console.log(`creating new function object with index ${idx}`);
     return new FieldTransform('Function',
       idx === undefined ? false : true,
-      idx === undefined ? null : idx, '', '', '', '', '', '', [new FieldTransform().newField(0)],
-      alias === undefined ? null : alias
+      idx === undefined ? undefined : idx,
+      '', '', '', '', '', '', [new FieldTransform().newField(0)],
+      alias === undefined ? null : alias,
+      [],
+      equality == undefined ? null: equality
     )
   }
   // create wrapper around an object
@@ -124,15 +135,15 @@ export class FieldTransform {
   }
 
   // based on a type, initialize the correct values and reset any that may have existed
-  fromType(type, idx, alias) {
-    console.log(`got index ${idx} in new FieldTransform().fromType()`)
+  fromType(type, idx, alias, equality) {
+    console.log(`got index ${idx} in new FieldTransform().fromType(), type ${type}`)
     switch (type) {
       case 'Field':
-        return new FieldTransform().newField(idx, alias)
+        return new FieldTransform().newField(idx, alias, equality)
       case 'Value':
-        return new FieldTransform().newValue(idx, alias)
+        return new FieldTransform().newValue(idx, alias, equality)
       case 'Function':
-        return new FieldTransform().newFunction(idx, alias)
+        return new FieldTransform().newFunction(idx, alias, equality)
     }
   }
 

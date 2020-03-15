@@ -1,6 +1,7 @@
 <script>
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
-  import { FieldTransform } from "./objects/FieldTransform.js";
+  import { FieldTransform, Equality } from "./objects/FieldTransform.js";
+  // import { Equality } from "./objects/Equality.js";
   import { getTable, getField } from "./utils/api.js";
   import { newRandomID } from "./utils/utils.js";
   import { Col, Row, Container, Input, CustomInput, Button } from "sveltestrap";
@@ -42,7 +43,8 @@
     props = new FieldTransform().fromType(
       e.target.value,
       props.arg_index,
-      props.alias
+      props.alias,
+      props.equality
     );
   };
 
@@ -93,6 +95,10 @@
     // props.field.column = e.target.value;
     props.field.column_id = e.target.options[e.target.selectedIndex].id;
   };
+  const handleAddEquality = () => {
+    props.equality = new Equality();
+  };
+
   beforeUpdate(() => {
     // console.log("new props after update: ", props);
     var i = props.args.indexOf(null);
@@ -129,7 +135,7 @@
       </option>
     {/each}
   </Input>
-  <Button>add equality</Button>
+  <Button disabled={disabled} on:click={handleAddEquality} >add equality</Button>
 
   <Button class='float-right' disabled={props.is_arg ? false : true} on:click={handleDelete}>delete</Button>
   <Button class='float-right' disabled={disabled} on:click={handleWrap}>wrap</Button>
@@ -178,8 +184,18 @@
     {alert("Type not supported")}
   {/if}
   </div>
-  {#if props.equality.operator !== ""}
-    <p>equality info</p>
+  {#if props.equality.operator !== undefined}
+  <div style="border: 2px dashed purple; border-radius: 10px; padding: 5px;">
+    <select class="form-control" style="width: fit-content;" bind:value={props.equality.operator}>
+      <option>select operator</option>
+      <option value="==">==</option>
+      <option value=">">&gt</option>
+      <option value="<">&lt</option>
+      <option value=">=">&gt=</option>
+      <option value="<=">&lt=</option>
+    </select>
+    <svelte:self bind:props={props.equality.arg} />
+  </div>
   {/if}
 </div>
 
@@ -202,21 +218,16 @@
   }
   .outer {
     padding: 5px;
-    /* margin: 5px; */
     margin: 8px;
     border: 1px solid black;
-    /* background-color: #52baeb; */
-    /* border-color: black;
-                                                                                                                                                                                                                                                                                                                                                            border-style: dashed;
-                                                                                                                                                                                                                                                                                                                                                            border-width: 2px; */
   }
   .func-args {
     border-color: black;
     border-style: dashed;
     border-width: 2px;
     border-radius: 15px;
-    /* padding-top: 20px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                padding-bottom: 20px; */
+    /* padding-top: 20px; */
+    /* padding-bottom: 20px; */
   }
   .wrap-button {
     float: right;
