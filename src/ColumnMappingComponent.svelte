@@ -1,6 +1,10 @@
 <script>
   import { onMount, beforeUpdate, afterUpdate } from "svelte";
-  import { FieldTransform, Equality } from "./objects/FieldTransform.js";
+  import {
+    FieldTransform,
+    newFieldTransform,
+    Equality
+  } from "./objects/FieldTransform.js";
   // import { Equality } from "./objects/Equality.js";
   import { getTable, getField } from "./utils/api.js";
   import { newRandomID } from "./utils/utils.js";
@@ -58,16 +62,17 @@
   };
 
   const handleMoveArgUp = idx => {
-    console.log("moving up index ", idx);
+    // console.log("moving up index ", idx);
     props = props.moveArgUp(idx);
   };
 
   const handleMoveArgDown = idx => {
-    console.log("moving down index ", idx);
+    // console.log("moving down index ", idx);
     props = props.moveArgDown(idx);
   };
 
   const handleDelete = () => {
+    console.log("deleting...");
     props = null;
   };
 
@@ -78,9 +83,7 @@
     );
   };
   const handleSelectTable = e => {
-    console.log("handling select table");
-    // console.log(e);
-    // props.field.table = e.target.value;
+    // console.log("handling select table");
     props.field.table_id = e.target.options[e.target.selectedIndex].id;
 
     props.field.column = "";
@@ -91,31 +94,65 @@
     });
   };
   const handleSelectField = e => {
-    // console.log(e);
-    // props.field.column = e.target.value;
     props.field.column_id = e.target.options[e.target.selectedIndex].id;
   };
   const handleAddEquality = () => {
     props.equality = new Equality();
   };
+  const handleChainMethods = () => {
+    props.chain_methods = [newFieldTransform(0)];
+  };
+  const handleChainMethod = () => {
+    console.log("chaining another method");
+    props.chain_methods = [
+      ...props.chain_methods,
+      newFieldTransform(props.chain_methods.length + 1)
+    ];
+  };
 
   beforeUpdate(() => {
-    // console.log("new props after update: ", props);
+    // remove deleted function arguments
     var i = props.args.indexOf(null);
     // console.log(`removing arg at index ${i}`);
     if (i >= 0) {
       props.args.splice(i, 1);
-      // props.args = props.args;
+    }
+
+    console.log("method chain");
+    console.log(props.chain_methods);
+    console.log(props.chain_methods.length);
+    console.log(props.chain_methods[0]);
+    console.log(props.chain_methods[0] === null);
+    // remove deleted chained methods arguments
+    var i = props.chain_methods.indexOf(null);
+    console.log(i);
+    if (i >= 0) {
+      console.log(`removing chained method at index ${i}`);
+      props.chain_methods.splice(i, 1);
     }
 
     // this helps the select menus for table and field
     props = props;
   });
 
+  // afterUpdate(() => {
+  //   console.log("method chain");
+  //   console.log(props.chain_methods);
+  //   console.log(props.chain_methods.length);
+  //   console.log(props.chain_methods[0]);
+  //   console.log(props.chain_methods[0] === null);
+  //   // remove deleted chained methods arguments
+  //   var i = props.chain_methods.indexOf(null);
+  //   console.log(i);
+  //   if (i >= 0) {
+  //     console.log(`removing chained method at index ${i}`);
+  //     props.chain_methods.splice(i, 1);
+  //   }
+  // });
+
   onMount(() => {
     console.log("mouting ColumnMappingComponent");
     getTable().then(data => {
-      // console.log(data);
       tableOptions = data;
     });
 
@@ -136,6 +173,7 @@
     {/each}
   </Input>
   <Button disabled={disabled} on:click={handleAddEquality} >add equality</Button>
+  <Button disabled={disabled} on:click={handleChainMethods} >chain methods</Button>
 
   <Button class='float-right' disabled={props.is_arg ? false : true} on:click={handleDelete}>delete</Button>
   <Button class='float-right' disabled={disabled} on:click={handleWrap}>wrap</Button>
@@ -183,7 +221,19 @@
   {:else }
     {alert("Type not supported")}
   {/if}
+  <!-- method chaining -->
+  {#if props.chain_methods.length > 0}
+  <div style="border: 2px dashed orange; border-radius: 10px; padding: 5px;">
+    {#each props.chain_methods as m, idx}
+      <svelte:self bind:props={m} />
+    {/each}
+    <Button size="sm" on:click={handleChainMethod}>
+    chain another
+    </Button>
   </div>
+  {/if}
+  </div>
+  <!-- equality -->
   {#if props.equality.operator !== undefined}
   <div style="border: 2px dashed purple; border-radius: 10px; padding: 5px;">
     <select class="form-control" style="width: fit-content;" bind:value={props.equality.operator}>

@@ -16,7 +16,7 @@ export class FieldTransform {
     this.value = value === undefined ? '' : value;
     this.function = func === undefined ? '' : func;
     this.args = args === undefined ? [] : args;
-    // need to implement
+    //
     this.chain_methods = chain_methods === undefined ? [] : chain_methods;
     //
     this.equality = equality === undefined ? {} : equality;
@@ -81,13 +81,13 @@ export class FieldTransform {
     return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', '', '', [prop], alias)
   }
   fromJSON (x) {
-    console.log("creating object from string");
+    // console.log("creating object from string");
     let o = JSON.parse(x);
     console.log(o);
     return new FieldTransform().fromObject(o)
   }
   fromObject (o) {
-    console.log("creating object from js object");
+    // console.log("creating object from js object");
     let x = new FieldTransform(
       o.type === undefined ? '' : o.type,
       Object.keys(o).includes("is_arg") ? o.is_arg : '',
@@ -98,12 +98,12 @@ export class FieldTransform {
       Object.keys(o).includes("field") ? Object.keys(o.field).includes("column_id") ? o.field.column_id : '' : '',
       Object.keys(o).includes("value") ? o.value : '',
       Object.keys(o).includes("function") ? o.function : '',
-      Object.keys(o).includes("args") ? o.args.map( x => new FieldTransform().fromObject(x)) : [],
+      Object.keys(o).includes("args") ? o.args.map( x => x === null ? null : new FieldTransform().fromObject(x)) : [],
       Object.keys(o).includes("alias") ? o.alias : '',
-      Object.keys(o).includes("chain_methods") ? o.chain_methods.map( x => new FieldTransform().fromObject(x)) : [],
+      Object.keys(o).includes("chain_methods") ? o.chain_methods.map( x => x === null ? null : new FieldTransform().fromObject(x)) : [],
       Object.keys(o).includes("equality") ? new Equality().fromObject(o.equality) : {},
     );
-    console.log("completed creating object");
+    // console.log("completed creating object");
     return x
   }
   // this method is used to move a function arguemnt up the list (from 2nd to 1st argument)
@@ -168,14 +168,27 @@ export class FieldTransform {
       delete r.fieldOptions;
     }
     var i;
+    // delete from function args
     for (i = 0; i < this.args.length; i++) {
-      r.args[i] = this.args[i].deleteFieldOptions();
+      if (r.args[i] !== null ) {
+        r.args[i] = this.args[i].deleteFieldOptions();
+      } else {
+        delete r.args[i]
+      }
+    }
+    // delete from chained methods
+    for (i = 0; i < this.chain_methods.length; i++) {
+      if (r.chain_methods[i] !== null ) {
+        r.chain_methods[i] = this.chain_methods[i].deleteFieldOptions();
+      } else {
+        delete r.chain_methods[i]
+      }
     }
     return r;
   }
 }
 
-export const newFieldTransform = FieldTransform.prototype.newDataSource;
+export const newFieldTransform = FieldTransform.prototype.newFieldTransform;
 
 export class Equality {
   constructor(operator, arg) {
