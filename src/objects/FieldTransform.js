@@ -196,13 +196,18 @@ export class Equality {
     // >, <, ==, etc.
     this.operator = operator === undefined ? "" : operator;
     // FieldTransform object
-    this.arg = arg === undefined ? new FieldTransform() : arg;
+    this.arg = arg === undefined ? new FieldTransform("Field", true, 0) : arg;
   }
 
   fromObject(o) {
+    if (o.arg === null) {
+      return new Equality();
+    }
     return new Equality(
       Object.keys(o).includes("operator") ?  o.operator : "",
       Object.keys(o).includes("arg") ?  new FieldTransform().fromObject(o.arg) : {}
     )
   }
+
+
 }

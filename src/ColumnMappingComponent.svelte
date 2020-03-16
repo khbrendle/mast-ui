@@ -111,44 +111,37 @@
   };
 
   beforeUpdate(() => {
+    console.log("props");
+    console.log(props);
     // remove deleted function arguments
-    var i = props.args.indexOf(null);
-    // console.log(`removing arg at index ${i}`);
-    if (i >= 0) {
-      props.args.splice(i, 1);
+    if (Object.keys(props).includes("args")) {
+      var i = props.args.indexOf(null);
+      // console.log(`removing arg at index ${i}`);
+      if (i >= 0) {
+        props.args.splice(i, 1);
+      }
     }
 
-    console.log("method chain");
-    console.log(props.chain_methods);
-    console.log(props.chain_methods.length);
-    console.log(props.chain_methods[0]);
-    console.log(props.chain_methods[0] === null);
     // remove deleted chained methods arguments
-    var i = props.chain_methods.indexOf(null);
-    console.log(i);
-    if (i >= 0) {
-      console.log(`removing chained method at index ${i}`);
-      props.chain_methods.splice(i, 1);
+    if (Object.keys(props).includes("chain_methods")) {
+      var i = props.chain_methods.indexOf(null);
+      if (i >= 0) {
+        props.chain_methods.splice(i, 1);
+      }
+    }
+
+    // remove deleted equality
+
+    if (Object.keys(props).includes("equality")) {
+      if (props.equality.arg === null) {
+        // reset to default
+        props.equality = {};
+      }
     }
 
     // this helps the select menus for table and field
     props = props;
   });
-
-  // afterUpdate(() => {
-  //   console.log("method chain");
-  //   console.log(props.chain_methods);
-  //   console.log(props.chain_methods.length);
-  //   console.log(props.chain_methods[0]);
-  //   console.log(props.chain_methods[0] === null);
-  //   // remove deleted chained methods arguments
-  //   var i = props.chain_methods.indexOf(null);
-  //   console.log(i);
-  //   if (i >= 0) {
-  //     console.log(`removing chained method at index ${i}`);
-  //     props.chain_methods.splice(i, 1);
-  //   }
-  // });
 
   onMount(() => {
     console.log("mouting ColumnMappingComponent");
