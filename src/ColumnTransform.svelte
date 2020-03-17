@@ -15,20 +15,15 @@
     input === "" ? new FieldTransform() : new FieldTransform().fromJSON(input);
   $: child_value = child_value; // this will make sure the value gets updated on change
 
-  // afterUpdate(() => {
-  //   console.log("new props after update: ", child_value);
-  //   var i = props.args.indexOf(null);
-  //   if (i >= 0) {
-  //     console.log(`removing arg at index ${i}`);
-  //     props.args = props.args.splice(i, 1);
-  //   }
-  // });
+  const handleLog = () => {
+    console.log(child_value);
+  };
 </script>
 
 <!--
   this component contains the column transformation builder
 -->
-
+<button type="button" on:click|preventDefault={handleLog}>log</button>
 <ColumnMappingComponent bind:props={child_value} />
 <!-- <div>{@html "<pre>" + JSON.stringify(child_value, null, 2) + "</pre>"}</div> -->
 <!-- <pre>{@html child_value.print()}</pre> -->

@@ -13,7 +13,7 @@ export class DataSource {
     this.select = select === undefined ? [] : select;
     // from is used for subqueries and queries
     // should be a DataSource object
-    this.from = from === undefined ? null : from;
+    this.from = from === undefined ? {} : from;
     // describes a table location; database, schema, table, and alias
     // should be a DataLocation object
     this.location = location === undefined ? new DataLocation() : location;

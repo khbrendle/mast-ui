@@ -3,6 +3,7 @@
   import {
     FieldTransform,
     newFieldTransform,
+    newEquality,
     Equality
   } from "./objects/FieldTransform.js";
   // import { Equality } from "./objects/Equality.js";
@@ -97,7 +98,8 @@
     props.field.column_id = e.target.options[e.target.selectedIndex].id;
   };
   const handleAddEquality = () => {
-    props.equality = new Equality();
+    console.log("adding equality");
+    props.equality = newEquality();
   };
   const handleChainMethods = () => {
     props.chain_methods = [newFieldTransform(0)];
@@ -111,31 +113,34 @@
   };
 
   beforeUpdate(() => {
-    console.log("props");
-    console.log(props);
-    // remove deleted function arguments
-    if (Object.keys(props).includes("args")) {
-      var i = props.args.indexOf(null);
-      // console.log(`removing arg at index ${i}`);
-      if (i >= 0) {
-        props.args.splice(i, 1);
+    // console.log("props");
+    // console.log(props);
+    if (props !== null) {
+      // remove deleted function arguments
+      if (Object.keys(props).includes("args")) {
+        var i = props.args.indexOf(null);
+        // console.log(`removing arg at index ${i}`);
+        if (i >= 0) {
+          props.args.splice(i, 1);
+        }
       }
-    }
 
-    // remove deleted chained methods arguments
-    if (Object.keys(props).includes("chain_methods")) {
-      var i = props.chain_methods.indexOf(null);
-      if (i >= 0) {
-        props.chain_methods.splice(i, 1);
+      // remove deleted chained methods arguments
+      if (Object.keys(props).includes("chain_methods")) {
+        var i = props.chain_methods.indexOf(null);
+        if (i >= 0) {
+          props.chain_methods.splice(i, 1);
+        }
       }
-    }
 
-    // remove deleted equality
-
-    if (Object.keys(props).includes("equality")) {
-      if (props.equality.arg === null) {
-        // reset to default
-        props.equality = {};
+      // remove deleted equality
+      if (Object.keys(props).includes("equality")) {
+        if (props.equality !== null) {
+          if (props.equality.arg === null) {
+            // reset to default
+            props.equality = null;
+          }
+        }
       }
     }
 
@@ -156,6 +161,7 @@
     }
   });
 </script>
+
 
 <div class="outer" style="padding: 5px; border-radius: 5px;">
   <Input type="select" style="display: inline; width: fit-content;" disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
@@ -227,7 +233,7 @@
   {/if}
   </div>
   <!-- equality -->
-  {#if props.equality.operator !== undefined}
+  {#if props.equality !== null}
   <div style="border: 2px dashed purple; border-radius: 10px; padding: 5px;">
     <select class="form-control" style="width: fit-content;" bind:value={props.equality.operator}>
       <option>select operator</option>

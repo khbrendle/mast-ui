@@ -88,7 +88,7 @@
   {#if props.type === "query"}
   <div>
     <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
-    <Col style="margin: 8px 8px 8px 0px; padding: 6px 6px 0px 6px; border: 1px dashed red; max-width: 93%;">
+    <Col style="padding: 6px; border: 1px dashed red; max-width: 93%;">
     <div>
       <select class="form-control" bind:value={props.type} style="width: 150px; display: inline;">
         <option value="table">Table</option>

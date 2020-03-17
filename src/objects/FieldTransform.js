@@ -19,7 +19,7 @@ export class FieldTransform {
     //
     this.chain_methods = chain_methods === undefined ? [] : chain_methods;
     //
-    this.equality = equality === undefined ? {} : equality;
+    this.equality = equality === undefined ? null : equality;
     this.alias = alias === undefined ? '' : alias;
     // $: this.args = this.args
     // console.log("end constructing: ", this)
@@ -41,7 +41,7 @@ export class FieldTransform {
       '', '', '', '', '', '', [],
       alias === undefined ? null : alias,
       [],
-      equality == undefined ? undefined: equality
+      equality
     )
   }
   // create new value object
@@ -81,7 +81,7 @@ export class FieldTransform {
     return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', '', '', [prop], alias)
   }
   fromJSON (x) {
-    // console.log("creating object from string");
+    console.log("creating object from JSON");
     let o = JSON.parse(x);
     console.log(o);
     return new FieldTransform().fromObject(o)
@@ -101,7 +101,7 @@ export class FieldTransform {
       Object.keys(o).includes("args") ? o.args.map( x => x === null ? null : new FieldTransform().fromObject(x)) : [],
       Object.keys(o).includes("alias") ? o.alias : '',
       Object.keys(o).includes("chain_methods") ? o.chain_methods.map( x => x === null ? null : new FieldTransform().fromObject(x)) : [],
-      Object.keys(o).includes("equality") ? new Equality().fromObject(o.equality) : {},
+      Object.keys(o).includes("equality") ? o.equality !== null ? new Equality().fromObject(o.equality) : null : null,
     );
     // console.log("completed creating object");
     return x
@@ -163,7 +163,7 @@ export class FieldTransform {
   }
 
   deleteFieldOptions() {
-    var r = this;
+    var r = this.copy();
     if (Object.keys(r).includes('fieldOptions')) {
       delete r.fieldOptions;
     }
@@ -184,6 +184,15 @@ export class FieldTransform {
         delete r.chain_methods[i]
       }
     }
+    // delete from equality
+    // if (Object.keys(r.equality).includes("arg")) {
+    //   if (r.equality.arg !== {}) {
+    //     if (Object.keys(r.equality.arg).includes('fieldOptions')) {
+    //       delete r.equality.arg.fieldOptions;
+    //     }
+    //   }
+    // }
+
     return r;
   }
 }
@@ -196,18 +205,24 @@ export class Equality {
     // >, <, ==, etc.
     this.operator = operator === undefined ? "" : operator;
     // FieldTransform object
-    this.arg = arg === undefined ? new FieldTransform("Field", true, 0) : arg;
+    this.arg = arg === undefined ? null : arg;
+  }
+
+  newEquality() {
+    return new Equality("", new FieldTransform("Field", true, 0))
   }
 
   fromObject(o) {
-    if (o.arg === null) {
+    if (o === null) {
       return new Equality();
+      // return {};
     }
     return new Equality(
       Object.keys(o).includes("operator") ?  o.operator : "",
-      Object.keys(o).includes("arg") ?  new FieldTransform().fromObject(o.arg) : {}
+      Object.keys(o).includes("arg") ? o.arg === null ? new FieldTransform() : new FieldTransform().fromObject(o.arg) : null
     )
   }
 
-
 }
+
+export const newEquality = Equality.prototype.newEquality;
