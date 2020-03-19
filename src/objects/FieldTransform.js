@@ -81,9 +81,9 @@ export class FieldTransform {
     return new FieldTransform('Function', is_arg, argsIndex, '', '', '', '', '', '', [prop], alias)
   }
   fromJSON (x) {
-    console.log("creating object from JSON");
+    // console.log("creating object from JSON");
     let o = JSON.parse(x);
-    console.log(o);
+    // console.log(o);
     return new FieldTransform().fromObject(o)
   }
   fromObject (o) {
@@ -154,7 +154,7 @@ export class FieldTransform {
 
   toString(replacer = null, spacing = 2) {
     var r = this.copy();
-    r = r.deleteFieldOptions();
+    // r = r.deleteFieldOptions();
     return JSON.stringify(r, replacer, spacing)
   }
 
@@ -162,39 +162,39 @@ export class FieldTransform {
     return syntaxHighlight(this.toString(null, 2))
   }
 
-  deleteFieldOptions() {
-    var r = this.copy();
-    if (Object.keys(r).includes('fieldOptions')) {
-      delete r.fieldOptions;
-    }
-    var i;
-    // delete from function args
-    for (i = 0; i < this.args.length; i++) {
-      if (r.args[i] !== null ) {
-        r.args[i] = this.args[i].deleteFieldOptions();
-      } else {
-        delete r.args[i]
-      }
-    }
-    // delete from chained methods
-    for (i = 0; i < this.chain_methods.length; i++) {
-      if (r.chain_methods[i] !== null ) {
-        r.chain_methods[i] = this.chain_methods[i].deleteFieldOptions();
-      } else {
-        delete r.chain_methods[i]
-      }
-    }
-    // delete from equality
-    // if (Object.keys(r.equality).includes("arg")) {
-    //   if (r.equality.arg !== {}) {
-    //     if (Object.keys(r.equality.arg).includes('fieldOptions')) {
-    //       delete r.equality.arg.fieldOptions;
-    //     }
-    //   }
-    // }
-
-    return r;
-  }
+  // deleteFieldOptions() {
+  //   var r = this.copy();
+  //   if (Object.keys(r).includes('fieldOptions')) {
+  //     delete r.fieldOptions;
+  //   }
+  //   var i;
+  //   // delete from function args
+  //   for (i = 0; i < this.args.length; i++) {
+  //     if (r.args[i] !== null ) {
+  //       r.args[i] = this.args[i].deleteFieldOptions();
+  //     } else {
+  //       delete r.args[i]
+  //     }
+  //   }
+  //   // delete from chained methods
+  //   for (i = 0; i < this.chain_methods.length; i++) {
+  //     if (r.chain_methods[i] !== null ) {
+  //       r.chain_methods[i] = this.chain_methods[i].deleteFieldOptions();
+  //     } else {
+  //       delete r.chain_methods[i]
+  //     }
+  //   }
+  //   // delete from equality
+  //   // if (Object.keys(r.equality).includes("arg")) {
+  //   //   if (r.equality.arg !== {}) {
+  //   //     if (Object.keys(r.equality.arg).includes('fieldOptions')) {
+  //   //       delete r.equality.arg.fieldOptions;
+  //   //     }
+  //   //   }
+  //   // }
+  //
+  //   return r;
+  // }
 }
 
 export const newFieldTransform = FieldTransform.prototype.newFieldTransform;

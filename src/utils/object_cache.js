@@ -1,14 +1,18 @@
+import { writable, get } from "svelte/store";
+
 export class ObjectCache {
-  constructor(objs, obj_cnt, keep_cnt) {
-    this.objects = objs === undefined ? {} : objs;
-    this.object_count = obj_cnt === undefined ? 0 : obj_cnt;
-    this.keep_count = keep_cnt === undefined ? 3 : keep_cnt
+  constructor(x) {
+    this.data = writable(x === null | x === undefined ? {"objects": {}, "object_count": null, "keep_count": null} : x)
+    // this.objects = objs === undefined ? {} : objs;
+    // this.object_count = obj_cnt === undefined ? 0 : obj_cnt;
+    // this.keep_count = keep_cnt === undefined ? -1 : keep_cnt
     return this
   }
 
   fromString(x) {
     var y = JSON.parse(x);
-    return new ObjectCache(y["objects"], y["object_count"], y["keep_count"]);
+    // return new ObjectCache(y["objects"], y["object_count"], y["keep_count"]);
+    return new ObjectCache(y);
   }
 
   toString() {

@@ -7,11 +7,14 @@
     Equality
   } from "./objects/FieldTransform.js";
   // import { Equality } from "./objects/Equality.js";
-  import { getTable, getField } from "./utils/api.js";
+  import { getTable, getField, optionsCache } from "./utils/api.js";
   import { newRandomID } from "./utils/utils.js";
+  import { get } from "svelte/store";
   import { Col, Row, Container, Input, CustomInput, Button } from "sveltestrap";
 
   const uniqID = newRandomID();
+  // used to create a beforeMount hook
+  let init = true;
 
   export let disabled = false;
   $: disabled = disabled;
@@ -28,11 +31,11 @@
     { id: 2, text: "Function" }
   ];
 
-  // let fieldOptions = [];
-  // $: fieldOptions = fieldOptions;
+  let fieldKey = "";
+  $: fieldKey = fieldKey;
 
-  let tableOptions = [];
-  $: tableOptions = tableOptions;
+  let tableKey = "";
+  $: tableKey = tableKey;
 
   const handleAddArgument = () => {
     console.log("adding argument");
@@ -91,7 +94,7 @@
     props.field.column_id = "";
     document.getElementById(`field-select-${uniqID}`).selectedIndex = 0;
     getField({ table_id: props.field.table_id }).then(data => {
-      props.fieldOptions = data;
+      fieldKey = data[0];
     });
   };
   const handleSelectField = e => {
@@ -113,8 +116,22 @@
   };
 
   beforeUpdate(() => {
-    // console.log("props");
-    // console.log(props);
+    // console.log(`${uniqID}-${init}`);
+    if (init) {
+      console.log("mouting ColumnMappingComponent");
+      getTable().then(data => {
+        tableKey = data[0];
+      });
+
+      if (props.field.column !== undefined && props.field.column !== "") {
+        getField({ table_id: props.field.table_id }).then(data => {
+          fieldKey = data[0];
+        });
+      }
+      init = false;
+    }
+
+    // handling deleting
     if (props !== null) {
       // remove deleted function arguments
       if (Object.keys(props).includes("args")) {
@@ -143,22 +160,8 @@
         }
       }
     }
-
     // this helps the select menus for table and field
     props = props;
-  });
-
-  onMount(() => {
-    console.log("mouting ColumnMappingComponent");
-    getTable().then(data => {
-      tableOptions = data;
-    });
-
-    if (props.field.column !== undefined && props.field.column !== "") {
-      getField({ table_id: props.field.table_id }).then(data => {
-        props.fieldOptions = data;
-      });
-    }
   });
 </script>
 
@@ -166,7 +169,7 @@
 <div class="outer" style="padding: 5px; border-radius: 5px;">
   <Input type="select" style="display: inline; width: fit-content;" disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
-      <option id={type.id} value={type.text} selected={props.type === type.text ? true : false}>
+      <option id={type.id} value={type.text} selected={props.type === type.text}>
         {type.text}
       </option>
     {/each}
@@ -183,17 +186,15 @@
   <!-- using HTML selects here to be able to bind value which will load the set option from JSON -->
     <select id={`table-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.table} on:change|preventDefault={handleSelectTable}>
       <option>select table</option>
-      {#each tableOptions as ft}
-        <option id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
+      {#each $optionsCache[tableKey] as ft}
+        <option selected={ft.table_id === props.field.table_id} id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
       {/each}
     </select>
     <select id={`field-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.column} on:change|preventDefault={handleSelectField}>
       <option>select field</option>
-      {#if props.fieldOptions !== undefined}
-      {#each props.fieldOptions as ft}
-        <option id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
+      {#each $optionsCache[fieldKey] as ft}
+        <option selected={ft.field_id === props.field.column_id} id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
       {/each}
-      {/if}
     </select>
   {:else if props.type === 'Value'}
       <input id="value" placeholder="Value" bind:value={props.value} disabled={disabled}>
