@@ -13,6 +13,12 @@
   let fieldKey = "";
   $: fieldKey = fieldKey;
 
+  // allowed values
+  export let allowedTables = [];
+  $: allowedTables = allowedTables;
+  export let allowedFields = [];
+  $: allowedFields = allowedFields;
+
   let displaySelectFields = "none";
   const handleOpenSelectFields = () => {
     console.log("opening modal");
@@ -34,6 +40,6 @@
 
 <Row>
   <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleOpenSelectFields}>Select Fields</Button>
-  <FieldSelections bind:selections={props.source.select} bind:fields={$optionsCache[fieldKey]} bind:display={displaySelectFields} />
+  <FieldSelections bind:selections={props.source.select} bind:fields={$optionsCache[fieldKey]} bind:display={displaySelectFields} bind:allowedTables={allowedTables} bind:allowedFields={allowedFields}/>
   <DataLocation bind:props={props.source.location} />
 </Row>

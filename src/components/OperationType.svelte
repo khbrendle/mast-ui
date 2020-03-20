@@ -22,6 +22,12 @@
   export let display = "none";
   $: display = display;
 
+  // allowed values
+  export let allowedTables = [];
+  $: allowedTables = allowedTables;
+  export let allowedFields = [];
+  $: allowedFields = allowedFields;
+
   const handleClose = () => {
     display = "none";
   };
@@ -86,7 +92,7 @@
                 open {j.entity.alias !== '' ? j.entity.alias : j.entity.field.column}
               </Button>
               <Collapse isOpen={isOpen[i]} >
-                <ColumnMappingComponent bind:props={j.entity} />
+                <ColumnMappingComponent bind:props={j.entity} bind:allowedTables={allowedTables} />
               </Collapse>
             </td>
           </tr>
@@ -105,7 +111,7 @@
             </select>
           </td>
           <td>
-            <ColumnMappingComponent bind:props={tmpCustomField.entity}/>
+            <ColumnMappingComponent bind:props={tmpCustomField.entity} bind:allowedTables={allowedTables} />
           </td>
           </tr>
       </Table>

@@ -37,6 +37,12 @@
   let temp = [];
   $: temp = temp;
 
+  // list of alllowed IDs
+  export let allowedTables = [];
+  $: allowedTables = allowedTables;
+  export let allowedFields = [];
+  $: allowedFields = allowedFields;
+
   // isOpen is used to keep track of opening/collapsing individual transformations
   // per row of the table
   // could keep a previous state version of this to be able to determine which was opened
@@ -56,7 +62,7 @@
   };
 
   beforeUpdate(() => {
-    console.log("fields", fields);
+    // console.log("fields", fields);
     if (fields !== undefined) {
       if (!fieldsProcessed && fields.length > 0) {
         fields.map((f, i) => {
@@ -76,19 +82,19 @@
             {}
           );
         });
-        console.log("temp", temp);
+        // console.log("temp", temp);
         temp = temp;
         fieldsProcessed = true;
       }
     }
 
-    console.log("selected");
-    console.log(selected);
+    // console.log("selected");
+    // console.log(selected);
     // if (selected === undefined) {
     //   selected = Array(fields.length).fill(false);
     // }
-    console.log("temp");
-    console.log(temp);
+    // console.log("temp");
+    // console.log(temp);
     selections = selected
       .map((k, i) => {
         return k ? temp[i] : null;
@@ -96,8 +102,8 @@
       .filter(x => {
         return x !== null;
       });
-    console.log("selections");
-    console.log(selections);
+    // console.log("selections");
+    // console.log(selections);
   });
 
   var tmpCustomField = new FieldTransform();
@@ -172,7 +178,7 @@
               <td>
                 <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.alias !== '' ? f.alias : f.field.column}</Button>
                 <Collapse isOpen={isOpen[i]} >
-                <ColumnMappingComponent bind:props={temp[i]}/>
+                <ColumnMappingComponent bind:props={temp[i]} bind:allowedTables={allowedTables}/>
                 </Collapse>
               </td>
             </tr>
@@ -187,7 +193,7 @@
             </td>
             <td></td>
             <td>
-              <ColumnMappingComponent bind:props={tmpCustomField}/>
+              <ColumnMappingComponent bind:props={tmpCustomField} bind:allowedTables={allowedTables}/>
             </td>
           </tr>
         </tbody>

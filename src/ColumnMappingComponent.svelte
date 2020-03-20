@@ -15,15 +15,17 @@
   // used to create a beforeMount hook
   let init = true;
 
+  // this will control all inputs/buttons/selects
   export let disabled = false;
   $: disabled = disabled;
 
+  // main result of component
   export let props = new FieldTransform().newField();
   $: props = props;
 
-  // console.log("object ", props, " is arg: ", props.is_arg);
   let moveBtnStyle = "margin: 5px auto; display: flex;";
 
+  // static set of available mapping types
   let mappingTypes = [
     { id: 0, text: "Field" },
     { id: 1, text: "Value" },
@@ -34,6 +36,17 @@
   $: fieldKey = fieldKey;
   let tableKey = "";
   $: tableKey = tableKey;
+
+  // optional array of allowed tables
+  // let allowdTables = [
+  //   "bp0ad6jipt375iprc42g",
+  //   "bp0ad6jipt375iprc48g",
+  //   "bp0ad6jipt375iprc410"
+  // ];
+  export let allowedTables = [];
+  $: allowedTables = allowedTables;
+  export let allowedFields = [];
+  $: allowedFields = allowedFields;
 
   const handleAddArgument = () => {
     console.log("adding argument");
@@ -186,7 +199,13 @@
       <option>select table</option>
       {#if tableKey !== ""}
       {#each $optionsCache[tableKey] as ft}
+        {#if allowedTables.length > 0}
+          {#if allowedTables.includes(ft.table_id)}
+          <option selected={ft.table_id === props.field.table_id} id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
+          {/if}
+        {:else}
         <option selected={ft.table_id === props.field.table_id} id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
+        {/if}
       {/each}
       {/if}
     </select>
@@ -194,7 +213,13 @@
       <option>select field</option>
       {#if fieldKey !== ""}
       {#each $optionsCache[fieldKey] as ft}
+        {#if allowedFields.length > 0}
+          {#if allowedTables.includes(ft.field_id)}
+          <option selected={ft.field_id === props.field.column_id} id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
+          {/if}
+        {:else}
         <option selected={ft.field_id === props.field.column_id} id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
+        {/if}
       {/each}
       {/if}
     </select>

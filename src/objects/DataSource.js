@@ -47,6 +47,22 @@ export class DataSource {
     return this
   }
 
+  getTableIDs() {
+    var r = [];
+    if (this.location.table_id !== null & this.location.table_id !== "") {
+      r.push(this.location.table_id)
+    }
+    // must be instance of DataSource to be able to call the method
+    if (this.from instanceof DataSource) {
+      r = r.concat(this.from.getTableIDs())
+    }
+    var i;
+    for (i = 0; i < this.operations.length; i++) {
+      r = r.concat(this.operations[i].source.getTableIDs())
+    }
+    return r;
+  }
+
   // this function will see if a location has been initialized and initialize if needed
   checkLocation() {
     if (this.location === null || this.location === undefined) {

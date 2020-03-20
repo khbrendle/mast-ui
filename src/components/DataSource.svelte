@@ -5,6 +5,7 @@
   import { syntaxHighlight } from "../utils/utils.js";
   import { getField, optionsCache } from "../utils/api.js";
   import { Col, Container, Row, Button, Input, Label } from "sveltestrap";
+  import { beforeUpdate } from "svelte";
   import DataLocation from "./DataLocation.svelte";
   import FieldSelections from "./FieldSelections.svelte";
   import OperationType from "./OperationType.svelte";
@@ -16,6 +17,12 @@
 
   // export let selected = [];
   // $: selected = selected;
+
+  // allowed values
+  export let allowedTables = [];
+  $: allowedTables = allowedTables;
+  export let allowedFields = [];
+  $: allowedFields = allowedFields;
 
   const logObj = () => {
     console.log("props");
@@ -50,7 +57,11 @@
         tableKey = data[0];
         // console.log(tableFields);
       });
-      selected = Array($optionsCache[tableKey].length).fill(false);
+      var fields = $optionsCache[tableKey];
+      if (fields === undefined) {
+        fields = [];
+      }
+      selected = Array(fields.length).fill(false);
     }
     displaySelectFields = "block";
   };
@@ -78,8 +89,19 @@
 
   let operationTypeDisplay = "none";
   const handleJoinDetails = () => {
-    operationTypeDisplay = "block";
+    if (allowedTables.length < 2) {
+      alert("must select some tables");
+    } else {
+      operationTypeDisplay = "block";
+    }
   };
+
+  beforeUpdate(() => {
+    allowedTables = props.getTableIDs();
+
+    // console.log("allowedTables");
+    // console.log(allowedTables);
+  });
 
   let addUnionBtnStyle =
     "width: 100%; height: 20px; font-size:10px; margin-right:6px;";
@@ -123,7 +145,7 @@
 {#each props.operations as e}
   {#if e.type.method === "join"}
     <Button style="margin: 5px;" on:click={handleJoinDetails}>join<br>details</Button>
-    <OperationType bind:display={operationTypeDisplay} bind:props={e.type} />
+    <OperationType bind:display={operationTypeDisplay} bind:props={e.type} bind:allowedFields={allowedFields} bind:allowedTables={allowedTables}/>
     <svelte:self bind:props={e.source} />
   {/if}
 {/each}
