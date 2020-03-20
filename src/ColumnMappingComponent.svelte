@@ -6,7 +6,6 @@
     newEquality,
     Equality
   } from "./objects/FieldTransform.js";
-  // import { Equality } from "./objects/Equality.js";
   import { getTable, getField, optionsCache } from "./utils/api.js";
   import { newRandomID } from "./utils/utils.js";
   import { get } from "svelte/store";
@@ -33,7 +32,6 @@
 
   let fieldKey = "";
   $: fieldKey = fieldKey;
-
   let tableKey = "";
   $: tableKey = tableKey;
 
@@ -186,15 +184,19 @@
   <!-- using HTML selects here to be able to bind value which will load the set option from JSON -->
     <select id={`table-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.table} on:change|preventDefault={handleSelectTable}>
       <option>select table</option>
+      {#if tableKey !== ""}
       {#each $optionsCache[tableKey] as ft}
         <option selected={ft.table_id === props.field.table_id} id={ft.table_id} value={ft.table_name}>{ft.table_name}</option>
       {/each}
+      {/if}
     </select>
     <select id={`field-select-${uniqID}`} class="form-control" style="width: 250px; display: inline;" disabled={disabled} bind:value={props.field.column} on:change|preventDefault={handleSelectField}>
       <option>select field</option>
+      {#if fieldKey !== ""}
       {#each $optionsCache[fieldKey] as ft}
         <option selected={ft.field_id === props.field.column_id} id={ft.field_id} value={ft.field_name}>{ft.field_name}</option>
       {/each}
+      {/if}
     </select>
   {:else if props.type === 'Value'}
       <input id="value" placeholder="Value" bind:value={props.value} disabled={disabled}>

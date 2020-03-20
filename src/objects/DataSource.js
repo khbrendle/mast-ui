@@ -1,6 +1,3 @@
-// const xid = require('xid-js');
-// import 'xid-js';
-
 import { DataLocation, newDataLocation } from "./DataLocation.js"
 
 export class DataSource {
@@ -70,11 +67,12 @@ export class DataSource {
   }
 
   fromObject(o) {
+    console.log(o);
     return new DataSource(
       o.type === undefined ? '' : o.type,
       Object.keys(o).includes("is_arg") ? o.is_arg : '',
       Object.keys(o).includes("select") ? o.select.map((v) => { return new FieldTransform().fromObject(v) }) : [],
-      Object.keys(o).includes("from") ?  new DataSource().fromObject(o.from) : {},
+      Object.keys(o).includes("from") ?  o.from !== null ? new DataSource().fromObject(o.from) : {} : {},
       Object.keys(o).includes("location") ?  new DataLocation().fromObject(o.location) : {},
       // this will need to be updated
       Object.keys(o).includes("filter") ?  o.filter : null,
@@ -95,20 +93,7 @@ export class DataSource {
   }
 
   toString() {
-    var r = this;
-    var i, i2;
-    for (i = 0; i < r.select.length; i++) {
-      r.select[i] = r.select[i].deleteFieldOptions();
-    }
-    for (i = 0; i < r.operations.length; i++) {
-      if (r.operations[i].type.method === "join") {
-        for (i2 = 0; i2 < r.operations[i].type.join_on.length; i2++) {
-          r.operations[i].type.join_on[i2].entity = r.operations[i].type.join_on[i2].entity.deleteFieldOptions();
-        }
-      }
-    }
-    // delete r.selected
-    return JSON.stringify(r, null, 2)
+    return JSON.stringify(this, null, 2)
   }
 }
 

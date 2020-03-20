@@ -3,7 +3,7 @@
   import { newDataSourceOperation } from "../objects/DataSourceOperation.js";
   import { newOperationType } from "../objects/OperationType.js";
   import { syntaxHighlight } from "../utils/utils.js";
-  import { getField } from "../utils/api.js";
+  import { getField, optionsCache } from "../utils/api.js";
   import { Col, Container, Row, Button, Input, Label } from "sveltestrap";
   import DataLocation from "./DataLocation.svelte";
   import FieldSelections from "./FieldSelections.svelte";
@@ -28,8 +28,10 @@
   };
 
   let displaySelectFields = "none";
-  let tableFields = [];
-  $: tableFields = tableFields;
+  let tableKey = "";
+  $: tableKey = tableKey;
+  // let tableFields = [];
+  // $: tableFields = tableFields;
   let selected = [];
   $: selected = selected;
   const handleOpenSelectFields = () => {
@@ -45,10 +47,10 @@
       }
       console.log(`table_id ${props.location.table_id}`);
       getField({ table_id: props.location.table_id }).then(data => {
-        tableFields = data;
+        tableKey = data[0];
         // console.log(tableFields);
       });
-      selected = Array(tableFields.length).fill(false);
+      selected = Array($optionsCache[tableKey].length).fill(false);
     }
     displaySelectFields = "block";
   };
@@ -96,7 +98,7 @@
       </select>
       {#if props.type === "query"}
         <Button class="float-none add-union-btn" display="display: inline;"on:click={handleOpenSelectFields}>Select Fields</Button>
-        <FieldSelections bind:selections={props.select} bind:selected={selected} bind:fields={tableFields} bind:display={displaySelectFields}/>
+        <FieldSelections bind:selections={props.select} bind:selected={selected} bind:fields={$optionsCache[tableKey]} bind:display={displaySelectFields}/>
       {/if}
     </div>
     <DataLocation bind:props={props.location} />

@@ -55,48 +55,31 @@
     disabled = !disabled;
   };
 
-  afterUpdate(() => {
-    // console.log("fieldsProcessed", fieldsProcessed);
-    // if (!fieldsProcessed && fields.length > 0) {
-    //   fields.map((f, i) => {
-    //     temp[i] = new FieldTransform(
-    //       "Field",
-    //       false,
-    //       null,
-    //       f.table_name,
-    //       f.table_id,
-    //       f.field_name,
-    //       f.field_id
-    //     );
-    //   });
-    //   console.log("temp", temp);
-    //   temp = temp;
-    //   fieldsProcessed = true;
-    // }
-  });
-
   beforeUpdate(() => {
-    if (!fieldsProcessed && fields.length > 0) {
-      fields.map((f, i) => {
-        temp[i] = new FieldTransform(
-          "Field",
-          false,
-          null,
-          f.table_name,
-          f.table_id,
-          f.field_name,
-          f.field_id,
-          null,
-          null,
-          [],
-          f.field_name,
-          [],
-          {}
-        );
-      });
-      console.log("temp", temp);
-      temp = temp;
-      fieldsProcessed = true;
+    console.log("fields", fields);
+    if (fields !== undefined) {
+      if (!fieldsProcessed && fields.length > 0) {
+        fields.map((f, i) => {
+          temp[i] = new FieldTransform(
+            "Field",
+            false,
+            null,
+            f.table_name,
+            f.table_id,
+            f.field_name,
+            f.field_id,
+            null,
+            null,
+            [],
+            f.field_name,
+            [],
+            {}
+          );
+        });
+        console.log("temp", temp);
+        temp = temp;
+        fieldsProcessed = true;
+      }
     }
 
     console.log("selected");
@@ -113,6 +96,7 @@
       .filter(x => {
         return x !== null;
       });
+    console.log("selections");
     console.log(selections);
   });
 

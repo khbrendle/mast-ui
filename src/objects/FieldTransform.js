@@ -1,5 +1,4 @@
 import { syntaxHighlight } from "../utils/utils.js"
-// import { Equality } from "./Equality.js"
 
 export class FieldTransform {
   constructor(type, is_arg, arg_index, table, table_id, column, column_id, value, func, args, alias, chain_methods, equality) {
@@ -154,7 +153,6 @@ export class FieldTransform {
 
   toString(replacer = null, spacing = 2) {
     var r = this.copy();
-    // r = r.deleteFieldOptions();
     return JSON.stringify(r, replacer, spacing)
   }
 
@@ -162,39 +160,6 @@ export class FieldTransform {
     return syntaxHighlight(this.toString(null, 2))
   }
 
-  // deleteFieldOptions() {
-  //   var r = this.copy();
-  //   if (Object.keys(r).includes('fieldOptions')) {
-  //     delete r.fieldOptions;
-  //   }
-  //   var i;
-  //   // delete from function args
-  //   for (i = 0; i < this.args.length; i++) {
-  //     if (r.args[i] !== null ) {
-  //       r.args[i] = this.args[i].deleteFieldOptions();
-  //     } else {
-  //       delete r.args[i]
-  //     }
-  //   }
-  //   // delete from chained methods
-  //   for (i = 0; i < this.chain_methods.length; i++) {
-  //     if (r.chain_methods[i] !== null ) {
-  //       r.chain_methods[i] = this.chain_methods[i].deleteFieldOptions();
-  //     } else {
-  //       delete r.chain_methods[i]
-  //     }
-  //   }
-  //   // delete from equality
-  //   // if (Object.keys(r.equality).includes("arg")) {
-  //   //   if (r.equality.arg !== {}) {
-  //   //     if (Object.keys(r.equality.arg).includes('fieldOptions')) {
-  //   //       delete r.equality.arg.fieldOptions;
-  //   //     }
-  //   //   }
-  //   // }
-  //
-  //   return r;
-  // }
 }
 
 export const newFieldTransform = FieldTransform.prototype.newFieldTransform;

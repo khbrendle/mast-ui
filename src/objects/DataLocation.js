@@ -1,5 +1,3 @@
-// const xid = require('xid-js');
-
 export class DataLocation {
   constructor(database, database_id, schema, table, table_id, alias) {
     this.database = database === undefined ? "" : database;
