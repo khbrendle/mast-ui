@@ -24,6 +24,7 @@
   export let fields = [];
   $: fields = fields;
   let fieldsProcessed = false;
+  let fieldsLen;
 
   // selected should be the final column selections/transformations
   // this will be bound from the parent
@@ -62,25 +63,42 @@
   };
 
   beforeUpdate(() => {
+    console.log(`id: ${uniqID}`);
     // console.log("fields", fields);
+    // console.log("selected", selected);
+    // console.log(`fieldsLen = ${fieldsLen}`);
+    // console.log(`n fields = ${fields !== undefined ? fields.length : null}`);
     if (fields !== undefined) {
+      if (fields.length !== fieldsLen) {
+        // after wrapping, need to reset the temp object
+        fieldsProcessed = false;
+        temp = [];
+      }
+
       if (!fieldsProcessed && fields.length > 0) {
+        fieldsLen = fields.length;
+        console.log("processing fields");
         fields.map((f, i) => {
-          temp[i] = new FieldTransform(
-            "Field",
-            false,
-            null,
-            f.table_name,
-            f.table_id,
-            f.field_name,
-            f.field_id,
-            null,
-            null,
-            [],
-            f.field_name,
-            [],
-            {}
-          );
+          console.log(f instanceof FieldTransform);
+          if (f instanceof FieldTransform) {
+            temp[i] = f;
+          } else {
+            temp[i] = new FieldTransform(
+              "Field",
+              false,
+              null,
+              f.table_name,
+              f.table_id,
+              f.field_name,
+              f.field_id,
+              null,
+              null,
+              [],
+              f.field_name,
+              [],
+              {}
+            );
+          }
         });
         // console.log("temp", temp);
         temp = temp;
@@ -137,6 +155,7 @@
         <!-- <button type="button" on:click|preventDefault={() => handleSubmit(input)}>Submit</button> -->
       </div>
       <div class="modal-body">
+        <h1>{uniqID}</h1>
         <Table>
           <thead>
             <tr>

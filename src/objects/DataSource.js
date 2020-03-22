@@ -1,7 +1,7 @@
 import { DataLocation, newDataLocation } from "./DataLocation.js"
 
 export class DataSource {
-  constructor(type, select, from, location, filter, operations, level, alias, selected) {
+  constructor(type, select, from, location, filter, operations, level, alias, selected, tableKey) {
     // 'query', 'subquery', or 'table'
     // default 'table'
     this.type = type === undefined ? null : type;
@@ -26,6 +26,7 @@ export class DataSource {
     this.alias = alias === undefined ? null : alias;
     // for front-end use only to hold state information
     this.selected = selected === undefined ? [] : selected;
+    this.tableKey = tableKey === undefined ? null : tableKey;
   }
 
   newDataSource(type) {
@@ -33,7 +34,7 @@ export class DataSource {
       case "table":
         return new DataSource("table", [], null, newDataLocation());
       case "query":
-        return new DataSource("query", [], {});
+        return new DataSource("query", [], newDataSource("table"));
       default:
         return new DataSource();
     }
@@ -47,17 +48,26 @@ export class DataSource {
     return this
   }
 
+  wrapQuery() {
+    console.log(this.select);
+    return new DataSource("query", [], this)
+  }
+
   getTableIDs() {
     var r = [];
+    var c;
     if (this.location.table_id !== null & this.location.table_id !== "") {
       r.push(this.location.table_id)
     }
     // must be instance of DataSource to be able to call the method
     if (this.from instanceof DataSource) {
+      // console.log("getting IDs from 'from'");
       r = r.concat(this.from.getTableIDs())
     }
     var i;
     for (i = 0; i < this.operations.length; i++) {
+      c = this.operations[i].source instanceof DataSource;
+      // console.log(`operation ${i} is DataSource ${c}`);
       r = r.concat(this.operations[i].source.getTableIDs())
     }
     return r;
@@ -66,7 +76,7 @@ export class DataSource {
   // this function will see if a location has been initialized and initialize if needed
   checkLocation() {
     if (this.location === null || this.location === undefined) {
-      console.log("setting new data location");
+      // console.log("setting new data location");
       this.location = newDataLocation()
     }
   }
