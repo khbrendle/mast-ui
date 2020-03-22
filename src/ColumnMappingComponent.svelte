@@ -17,7 +17,7 @@
 
   // this will control all inputs/buttons/selects
   export let disabled = false;
-  $: disabled = disabled;
+  // $: disabled = disabled;
 
   // main result of component
   export let props = new FieldTransform().newField();
@@ -33,9 +33,9 @@
   ];
 
   let fieldKey = "";
-  $: fieldKey = fieldKey;
+  // $: fieldKey = fieldKey;
   let tableKey = "";
-  $: tableKey = tableKey;
+  // $: tableKey = tableKey;
 
   // optional array of allowed tables
   // let allowdTables = [
@@ -44,9 +44,9 @@
   //   "bp0ad6jipt375iprc410"
   // ];
   export let allowedTables = [];
-  $: allowedTables = allowedTables;
+  // $: allowedTables = allowedTables;
   export let allowedFields = [];
-  $: allowedFields = allowedFields;
+  // $: allowedFields = allowedFields;
 
   const handleAddArgument = () => {
     console.log("adding argument");
@@ -141,42 +141,48 @@
       }
       init = false;
     }
-
-    // handling deleting
-    if (props !== null) {
-      // remove deleted function arguments
-      if (Object.keys(props).includes("args")) {
-        var i = props.args.indexOf(null);
-        // console.log(`removing arg at index ${i}`);
-        if (i >= 0) {
-          props.args.splice(i, 1);
+    if (props !== undefined) {
+      console.log("deleting args");
+      console.log(props);
+      // handling deleting
+      if (props !== null) {
+        // remove deleted function arguments
+        if (Object.keys(props).includes("args")) {
+          if (props.args.length > 0) {
+            var i = props.args.indexOf(null);
+            // console.log(`removing arg at index ${i}`);
+            if (i >= 0) {
+              props.args.splice(i, 1);
+            }
+          }
         }
-      }
 
-      // remove deleted chained methods arguments
-      if (Object.keys(props).includes("chain_methods")) {
-        var i = props.chain_methods.indexOf(null);
-        if (i >= 0) {
-          props.chain_methods.splice(i, 1);
+        // remove deleted chained methods arguments
+        if (Object.keys(props).includes("chain_methods")) {
+          var i = props.chain_methods.indexOf(null);
+          if (i >= 0) {
+            props.chain_methods.splice(i, 1);
+          }
         }
-      }
 
-      // remove deleted equality
-      if (Object.keys(props).includes("equality")) {
-        if (props.equality !== null) {
-          if (props.equality.arg === null) {
-            // reset to default
-            props.equality = null;
+        // remove deleted equality
+        if (Object.keys(props).includes("equality")) {
+          if (props.equality !== null) {
+            if (props.equality.arg === null) {
+              // reset to default
+              props.equality = null;
+            }
           }
         }
       }
     }
+
     // this helps the select menus for table and field
     props = props;
   });
 </script>
 
-
+{#if props !== undefined}
 <div class="outer" style="padding: 5px; border-radius: 5px;">
   <Input type="select" style="display: inline; width: fit-content;" disabled={disabled} bind:value={props.type} on:change={handleSelectType}>
     {#each mappingTypes as type}
@@ -275,6 +281,7 @@
   </div>
   {/if}
 </div>
+{/if}
 
 <style>
   input {

@@ -121,6 +121,21 @@ export class DataSource {
   toString() {
     return JSON.stringify(this, null, 2)
   }
+
+  getFields() {
+    var r = [];
+    r = r.concat(this.select);
+    if (this.from !== null) {
+      r = r.concat(this.from.getFields());
+    }
+    if (this.operations.length > 0) {
+      var i;
+      for (i = 0; i < this.operations.length; i++) {
+        r = r.concat(this.operations[i].source.getFields());
+      }
+    }
+    return r;
+  }
 }
 
 export const newDataSource = DataSource.prototype.newDataSource;

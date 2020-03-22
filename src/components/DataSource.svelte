@@ -63,7 +63,8 @@
       var fields;
       if (props.from.type === "query") {
         console.log("getting subquery selections");
-        fields = props.from.select;
+        // fields = props.from.select;
+        fields = props.getFields();
       } else {
         console.log("getting table fields");
         if (
@@ -148,7 +149,8 @@
       if (props.from.type === "table") {
         fields = $optionsCache[props.tableKey];
       } else {
-        fields = props.from.select;
+        // fields = props.from.select;
+        fields = props.getFields();
       }
     }
     // if (!loadedFields) {
@@ -171,13 +173,15 @@
   let addJoinBtnStyle = "font-size: 10px; height: 124px; width: 6%";
 </script>
 
-<Col style="padding: 8px; border: 1px dashed blue;"> <!--  min-width: 630px; -->
+<!-- <div style="padding: 8px; border: 1px dashed purple;"> <!--  min-width: 630px; -->
+
+<div style="padding: 8px; border: 1px dashed blue; overflow: scroll; flex-wrap: nowrap; min-width: 400px;"> <!--  min-width: 630px; -->
 
 <!-- type 'query' -->
   {#if props.type === "query"}
-  <div>
-    <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
-    <Col style="padding: 6px; border: 1px dashed red; max-width: 93%;">
+  <div style="display: flex;">
+    <!-- <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button> -->
+    <Col style="padding: 6px; border: 1px dashed red; max-width: 93%; display: table;">
     <div>
       <Button class="float-right" size="sm" on:click={handleWrap}>wrap</Button>
       <Button class="float-right" size="sm" on:click={handleLog}>log</Button>
@@ -193,6 +197,7 @@
     <!-- <DataLocation bind:props={props.location} /> -->
     <svelte:self bind:props={props.from} />
     </Col>
+    <Button class="float-right add-join-btn" style={addJoinBtnStyle} title="Add Join" on:click={handleAddJoin}>add<br>join</Button>
   </div>
   <Button class="float-none add-union-btn" style={addUnionBtnStyle} on:click={handleAddUnion}>add union</Button>
   <!-- unions -->
@@ -213,7 +218,7 @@
   <DataLocation bind:props={props.location} />
   {/if}
 
-</Col>
+</div>
 <!-- joins -->
 {#each props.operations as e}
   {#if e.type.method === "join"}
@@ -222,3 +227,5 @@
     <svelte:self bind:props={e.source} />
   {/if}
 {/each}
+
+<!-- </div> -->

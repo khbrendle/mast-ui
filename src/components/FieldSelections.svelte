@@ -94,9 +94,11 @@
               null,
               null,
               [],
-              f.field_name,
+              f.alias === "" || f.alias === undefined || f.alias === null // null should be the correct but handle all
+                ? f.field_name
+                : f.alias,
               [],
-              {}
+              null
             );
           }
         });
@@ -135,6 +137,11 @@
     tmpCustomField = new FieldTransform();
   };
 
+  const handleOpenField = i => {
+    console.log("editing field object", temp[i]);
+    isOpen[i] = !isOpen[i];
+  };
+
   const aliasInputStyle =
     "background: #eaeaea; border-radius: 7px; border: .5px solid #a0a0a0";
   const handleLogButton = () => {
@@ -155,7 +162,7 @@
         <!-- <button type="button" on:click|preventDefault={() => handleSubmit(input)}>Submit</button> -->
       </div>
       <div class="modal-body">
-        <h1>{uniqID}</h1>
+        <!-- <h1>{uniqID}</h1> -->
         <Table>
           <thead>
             <tr>
@@ -195,9 +202,9 @@
                 <Button on:click={() => {console.log(temp[i])}}>print</Button>
               </td> -->
               <td>
-                <Button on:click={() => (isOpen[i] = !isOpen[i])}>{f.alias !== '' ? f.alias : f.field.column}</Button>
+                <Button on:click={() => handleOpenField(i)}>{f.alias !== '' ? f.alias : f.field.column}</Button>
                 <Collapse isOpen={isOpen[i]} >
-                <ColumnMappingComponent bind:props={temp[i]} bind:allowedTables={allowedTables}/>
+                  <ColumnMappingComponent bind:props={temp[i]} bind:allowedTables={allowedTables}/>
                 </Collapse>
               </td>
             </tr>
